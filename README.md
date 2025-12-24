@@ -7,7 +7,7 @@
 
 <!-- REMPLACEZ LES LIENS CI-DESSOUS -->
 - **APPLICATION DÉPLOYÉE (Live Demo) :** [CLIQUEZ ICI POUR VOIR LE SITE](https://)
-- **Repository GitHub :** [Lien vers ce repo](https://)
+- **Repository GitHub :** [Lien vers ce repo](https://github.com/mabchoursalma4-spec/Projet-Gestion-Commerciale-Mini-ERP-.git)
 
 ---
 
@@ -17,9 +17,9 @@
 
 | Prénom & Nom | Rôle / Tâches principales | Lien Github |
 |--------------|---------------------------|-------------|
-| Étudiant 1   |  CRUD (utilisateurs+clients) | [@pseudo](https://github.com/pseudo) |
-| Étudiant 2   |  CRUD (Produits + Commandes ) | [@pseudo](https://github.com/pseudo) |
-| Étudiant 3   | CRUD Factures + Dashboar   | [@pseudo](https://github.com/pseudo) |
+| Étudiant 1   |  CRUD (utilisateurs+clients) | [@mabchoursalma4-spec](https://github.com/mabchoursalma4-spec) |
+| Étudiant 2   |  CRUD (Produits + Commandes ) | [@](https://github.com/) |
+| Étudiant 3   | CRUD Factures + Dashboar   | [@aichabcm-lab](https://github.com/aichabcm-lab) |
 
 ---
 
