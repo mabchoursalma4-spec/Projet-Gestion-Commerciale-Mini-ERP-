@@ -18,7 +18,7 @@
 | Prénom & Nom | Rôle / Tâches principales | Lien Github |
 |--------------|---------------------------|-------------|
 | Étudiant 1   |  CRUD (utilisateurs+clients) | [@mabchoursalma4-spec](https://github.com/mabchoursalma4-spec) |
-| Étudiant 2   |  CRUD (Produits + Commandes ) | [@](https://github.com/) |
+| Étudiant 2   |  CRUD (Produits + Commandes ) | [@oumaima0555](https://github.com/oumaima0555) |
 | Étudiant 3   | CRUD Factures + Dashboar   | [@aichabcm-lab](https://github.com/aichabcm-lab) |
 
 ---
