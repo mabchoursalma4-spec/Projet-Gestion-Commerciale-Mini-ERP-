@@ -1,66 +1,93 @@
-#  Projet Gestion Commerciale – Mini ERP
-# Contexte du Projet
-Ce projet a été réalisé dans le cadre d’un travail académique.  
-L’objectif est de développer une application **Backoffice de Gestion Commerciale** en utilisant **JavaScript natif (VanillaJS)**, **HTML5** et **CSS3**, sans utiliser de frameworks modernes comme React ou Angular.
-# Objectifs
-- Implémenter des fonctionnalités **CRUD** (Créer, Lire, Mettre à jour, Supprimer)
-- Gérer au minimum **5 entités**
-- Utiliser des **APIs publiques** ou des données simulées
-- Créer un **tableau de bord (Dashboard)** avec des statistiques
-- Appliquer les notions de manipulation du **DOM**, **Fetch API** et **Async/Await**
-- Concevoir une interface **responsive** et simple à utiliser
-#  Entités Gérées
-L’application permet de gérer les entités suivantes :
+# Gestion-Commerciale-Mini-ERP
 
-- Utilisateurs  
-- Clients  
-- Produits  
-- Commandes  
-- Factures  
+<!-- Mettez un court slogan ou une description en une phrase ici -->
+> Application Backoffice de gestion réalisée dans le cadre du module Dévelopement web.
 
-Pour chaque entité, les fonctionnalités suivantes sont disponibles :
-- Ajout d’un élément via un formulaire
-- Affichage sous forme de tableau
-- Modification des données
-- Suppression avec confirmation
-- Consultation des détails
-- Export des données (CSV / PDF)
-#  Dashboard
-Le tableau de bord affiche :
-- Le nombre total d’utilisateurs
-- Le nombre de clients
-- Les commandes en attente
-- Le chiffre d’affaires
-- Les factures payées et impayées
+## 🔗 Liens Importants
 
-Il contient au moins 5 graphiques, par exemple :
-- Bar chart
-- Pie chart
-- Line chart
-- Doughnut chart
-- Histogram
+<!-- REMPLACEZ LES LIENS CI-DESSOUS -->
+- **APPLICATION DÉPLOYÉE (Live Demo) :** [CLIQUEZ ICI POUR VOIR LE SITE](https://)
+- **Repository GitHub :** [Lien vers ce repo](https://)
 
-Les graphiques sont réalisés à l’aide de la bibliothèque Chart.js.
+---
 
+## 👥 Membres de l'Équipe
 
-# Technologies Utilisées
-- HTML5  
-- CSS3  
-- JavaScript
+**Nom du Groupe :** [Insérer le nom du groupe ici]
 
-# Bibliothèques
-- Bootstrap / Tailwind CSS (design et responsive)
-- Chart.js (graphiques)
-- jQuery (manipulation du DOM)
+| Prénom & Nom | Rôle / Tâches principales | Lien Github |
+|--------------|---------------------------|-------------|
+| Étudiant 1   |  CRUD (utilisateurs+clients) | [@pseudo](https://github.com/pseudo) |
+| Étudiant 2   |  CRUD (Produits + Commandes ) | [@pseudo](https://github.com/pseudo) |
+| Étudiant 3   | CRUD Factures + Dashboar   | [@pseudo](https://github.com/pseudo) |
 
-#  Interface Utilisateur
-- Interface responsive (mobile, tablette, ordinateur)
-- Menu latéral pour la navigation
-- Barre de navigation avec bouton de déconnexion
-- Page de connexion avec un utilisateur statique :
-  - Login : admin
-  - Mot de passe : admin
-- Support de plusieurs langues :
-  - Français
-  - Anglais
-  - Arabe
+---
+
+## 📝 Thème Choisi
+<!-- Indiquez le thème choisi parmi la liste ou votre sujet personnalisé -->
+*  Gestion Commerciale
+*   Le but de cette application est de développer un mini système de gestion commerciale permettant d’administrer plusieurs entités (utilisateurs, clients, produits, commandes et factures) et de visualiser des statistiques via un tableau de bord.
+
+---
+
+## ✅ État d'Avancement (Checklist)
+<!-- Cochez les cases [x] pour les fonctionnalités terminées. Laissez [ ] pour ce qui n'est pas fait. -->
+
+### Fonctionnalités Principales
+- [X] **CRUD 1 :**  Utilisateurs (Create, Read, Update, Delete)
+- [ ] **CRUD 2 :** Clients
+- [ ] **CRUD 3 :** Produits
+- [ ] **CRUD 4 :** Commandes
+- [ ] **CRUD 5 :** Factures
+- [ ] **Recherche & Filtres** dans les tableaux
+- [ ] **Pagination**
+
+### Dashboard & Data
+- [ ] **KPIs :** Cartes avec chiffres clés (Total utilisateurs, revenus, etc.)
+- [ ] **Chart 1 :** [Type, ex: Pie Chart]
+- [ ] **Chart 2 :** [Type, ex: Bar Chart]
+- [ ] **Chart 3 :** [Type]
+- [ ] **Chart 4 :** [Type]
+- [ ] **Chart 5 :** [Type]
+
+### Technique & Bonus
+- [ ] **Export :** (PDF ou CSV)
+- [ ] **Architecture :** Code organisé sans Framework (Vanilla JS)
+- [ ] **Design :** Interface Responsive (Mobile/Tablette)
+
+---
+
+## 🛠 Stack Technique
+
+*   **HTML5 / CSS3** (Framework CSS utilisé : Bootstrap / Tailwind / Autre ?)
+*   **JavaScript (ES6+)** (Vanilla JS obligatoire)
+*   **Bibliothèques JS utilisées :** (ex: Chart.js, Faker.js, jsPDF, Lodash...)
+
+### APIs Utilisées
+<!-- Listez les APIs externes ou précisez si vous utilisez des données mockées -->
+*   Source des données : [ex: JSONPlaceholder, Mockaroo, API locale...]
+    *   Endpoint 1 : `https://api.emple.com/users`
+    *   Endpoint 2 : ...
+
+---
+
+## ⚙️ Installation Locale
+
+Pour lancer le projet localement :
+
+1.  Cloner le repo :
+    ```bash
+    git clone https://github.com/votre-user/votre-repo.git
+    ```
+2.  Ouvrir le dossier :
+    ```bash
+    cd votre-dossier
+    ```
+3.  Lancer l'application :
+    *   Ouvrez simplement `index.html` dans votre navigateur.
+    *   OU utilisez Live Server (VS Code Extension).
+
+---
+
+## 📸 Captures d'écran (Optionnel)
+<!-- Vous pouvez ajouter ici 1 ou 2 screenshots de votre interface -->
