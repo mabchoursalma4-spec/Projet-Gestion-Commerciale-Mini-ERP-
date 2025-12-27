@@ -1,0 +1,15 @@
+.sidebar {
+    width:240px;
+    min-height: 100vh;
+}
+/* sidebar */
+.sidebar .nav-link{
+  font-size: 19px ; 
+  font-weight: 400; 
+}
+
+/* titre sidebar */
+.sidebar h4{
+  font-size: 25px ;
+  font-weight: 700;
+}
