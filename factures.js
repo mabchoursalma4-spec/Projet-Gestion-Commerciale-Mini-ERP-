@@ -1,100 +1,191 @@
 /*****************************************
- * CRUD FACTURES - localStorage
+ * CRUD UTILISATEUR - localStorage
+ * + Bootstrap Modal
  *****************************************/
 
-const STORAGE_KEY = "erp_factures"; 
+const STORAGE_KEY = "erp_utilisateurs";
+
+// Bootstrap modal instance (créée quand la page contient la modal)
+let utilisateurModalInstance = null;
 
 document.addEventListener("DOMContentLoaded", () => {
-    // Charger les factures au démarrage
-    afficherFactures();
+    // Si la page contient la table, on charge la liste
+    loadUtilisateurs();
 
-    // Brancher le formulaire
-    const form = document.getElementById("factureForm");
-    if (form) form.addEventListener("submit", ajouterOuModifierFacture);
+    // Si la page contient la modal, on prépare l'instance Bootstrap
+    const modalEl = document.getElementById("utilisateurModal");
+    if (modalEl && window.bootstrap) {
+        utilisateurModalInstance = new bootstrap.Modal(modalEl);
+    }
+
+    // Brancher le submit si le formulaire existe
+    const form = document.getElementById("utilisateurForm");
+    if (form) {
+        form.addEventListener("submit", onSubmitUtilisateurForm);
+    }
 });
 
-/* ===== LOCALSTORAGE ===== */
-function getFactures() {
+/* =======================
+   STORAGE
+======================= */
+function getUtilisateurs() {
     return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 }
 
-function saveFactures(factures) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(factures));
+function saveUtilisateurs(data) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 }
 
-/* ===== AFFICHER ===== */
-function afficherFactures() {
-    const tbody = document.getElementById("factureTableBody");
-    const factures = getFactures();
+/* =======================
+   LISTE
+======================= */
+function loadUtilisateurs() {
+    const tbody = document.getElementById("utilisateurTableBody");
+    if (!tbody) return; // si on est sur details.html, pas de table
+
+    const utilisateurs = getUtilisateurs();
     tbody.innerHTML = "";
 
-    if (factures.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="text-center">Aucune facture</td></tr>`;
+    if (utilisateurs.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5" class="text-center">Aucun utilisateur</td>
+            </tr>
+        `;
         return;
     }
 
-    factures.forEach((f, index) => {
+    utilisateurs.forEach((u, index) => {
+        const roleLabel = (u.role === "admin") ? "Admin" : "Utilisateur";
+
         tbody.innerHTML += `
             <tr>
                 <td>${index + 1}</td>
-                <td>${f.client}</td>
-                <td>${f.amount.toFixed(2)}</td>
-                <td>${f.status}</td>
-                <td>
-                    <button onclick="modifierFacture(${f.id})" class="btn btn-sm btn-warning">Modifier</button>
-                    <button onclick="supprimerFacture(${f.id})" class="btn btn-sm btn-danger">Supprimer</button>
+                <td>${escapeHtml(u.nom)}</td>
+                <td>${escapeHtml(u.email)}</td>
+                <td>${roleLabel}</td>
+                <td class="d-flex gap-2">
+                    <a class="btn btn-sm btn-info" href="utilisateur-details.html?id=${u.id}">Voir</a>
+                    <button class="btn btn-sm btn-warning" type="button" onclick="editUtilisateur(${u.id})">Modifier</button>
+                    <button class="btn btn-sm btn-danger" type="button" onclick="deleteUtilisateur(${u.id})">Supprimer</button>
                 </td>
             </tr>
         `;
     });
 }
 
-/* ===== AJOUT / MODIF ===== */
-function ajouterOuModifierFacture(e) {
+/* =======================
+   MODAL - OUVRIR AJOUT
+======================= */
+function openAddUtilisateur() {
+    // reset form
+    const form = document.getElementById("utilisateurForm");
+    if (!form) return;
+
+    form.reset();
+    document.getElementById("utilisateurId").value = "";
+    document.getElementById("modalTitle").innerText = "Ajouter utilisateur";
+
+    // ouvrir modal bootstrap
+    if (utilisateurModalInstance) utilisateurModalInstance.show();
+}
+
+/* =======================
+   SUBMIT FORM (AJOUT/MODIF)
+======================= */
+function onSubmitUtilisateurForm(e) {
     e.preventDefault();
 
-    const client = document.getElementById("client").value.trim();
-    const amount = parseFloat(document.getElementById("Montant").value);
-    const status = document.getElementById("status").value;
+    const id = document.getElementById("utilisateurId").value;
+    const nom = document.getElementById("nom").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const role = document.getElementById("role").value; // admin / utilisateur
 
-    if (!client || isNaN(amount)) return;
+    if (!nom || !email) return;
 
-    let factures = getFactures();
-    const form = document.getElementById("factureForm");
+    let utilisateurs = getUtilisateurs();
 
-    if (form.dataset.editId) {
-        // Modifier facture existante
-        const editId = parseInt(form.dataset.editId);
-        factures = factures.map(f => f.id === editId ? { ...f, client, amount, status } : f);
-        delete form.dataset.editId;
+    if (id) {
+        // MODIFIER
+        utilisateurs = utilisateurs.map(u =>
+            String(u.id) === String(id) ? { ...u, nom, email, role } : u
+        );
     } else {
-        // Ajouter nouvelle facture
-        factures.push({ id: Date.now(), client, amount, status });
+        // AJOUTER
+        utilisateurs.push({
+            id: Date.now(),
+            nom,
+            email,
+            role
+        });
     }
 
-    saveFactures(factures);
-    afficherFactures();
-    form.reset();
+    saveUtilisateurs(utilisateurs);
+
+    // fermer modal bootstrap
+    if (utilisateurModalInstance) utilisateurModalInstance.hide();
+
+    // refresh table
+    loadUtilisateurs();
 }
 
-/* ===== MODIFIER ===== */
-function modifierFacture(id) {
-    const f = getFactures().find(f => f.id === id);
-    if (!f) return;
+/* =======================
+   EDIT
+======================= */
+function editUtilisateur(id) {
+    const u = getUtilisateurs().find(x => x.id === id);
+    if (!u) return;
 
-    document.getElementById("client").value = f.client;
-    document.getElementById("Montant").value = f.amount;
-    document.getElementById("status").value = f.status;
+    document.getElementById("modalTitle").innerText = "Modifier utilisateur";
+    document.getElementById("utilisateurId").value = u.id;
+    document.getElementById("nom").value = u.nom;
+    document.getElementById("email").value = u.email;
+    document.getElementById("role").value = u.role;
 
-    document.getElementById("factureForm").dataset.editId = id;
+    if (utilisateurModalInstance) utilisateurModalInstance.show();
 }
 
-/* ===== SUPPRIMER ===== */
-function supprimerFacture(id) {
-    if (!confirm("Voulez-vous vraiment supprimer cette facture ?")) return;
+/* =======================
+   DELETE
+======================= */
+function deleteUtilisateur(id) {
+    if (!confirm("Supprimer cet utilisateur ?")) return;
 
-    let factures = getFactures();
-    factures = factures.filter(f => f.id !== id);
-    saveFactures(factures);
-    afficherFactures();
+    const restants = getUtilisateurs().filter(u => u.id !== id);
+    saveUtilisateurs(restants);
+    loadUtilisateurs();
+}
+
+/* =======================
+   DETAILS PAGE
+======================= */
+function loadUtilisateurDetails() {
+    const params = new URLSearchParams(window.location.search);
+    const id = Number(params.get("id"));
+    if (!id) return;
+
+    const u = getUtilisateurs().find(x => x.id === id);
+    if (!u) return;
+
+    const roleLabel = (u.role === "admin") ? "Admin" : "Utilisateur";
+
+    const nomEl = document.getElementById("detailNom");
+    const emailEl = document.getElementById("detailEmail");
+    const roleEl = document.getElementById("detailRole");
+
+    if (nomEl) nomEl.innerText = u.nom;
+    if (emailEl) emailEl.innerText = u.email;
+    if (roleEl) roleEl.innerText = roleLabel;
+}
+
+/* =======================
+   UTILS (sécurité affichage)
+======================= */
+function escapeHtml(str) {
+    return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
 }
