@@ -4,36 +4,125 @@
     <meta charset="UTF-8">
     <title>Factures</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- BOOTSTRAP -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- CSS custom -->
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="p-4">
+<body>
 
-<h2>Gestion des factures</h2>
+<div class="d-flex">
 
-<!-- Formulaire  -->
-<form id="factureForm" class="mb-3">
-    <input type="text" id="client" placeholder="Nom du client" required>
-    <input type="number" id="Montant" placeholder="Montant" required>
-    <select id="status">
-        <option value="payée">Payée</option>
-        <option value="impayée">Impayée</option>
-    </select>
-    <button type="submit" class="btn btn-primary">Ajouter</button>
-</form>
+    <!-- SIDEBAR -->
+    <aside class="sidebar bg-primary text-white">
+        <h4 class="text-center py-3 border-bottom">Mini-ERP</h4>
 
-<!-- Table des factures -->
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>#</th>
-            <th>Client</th>
-            <th>Montant</th>
-            <th>Statut</th>
-        </tr>
-    </thead>
-    <tbody id="factureTableBody"></tbody>
-</table>
+        <ul class="nav nav-pills flex-column px-2">
+            <li class="nav-item">
+                <a class="nav-link text-white" href="index.html">Dashboard</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href="utilisateur.html">Utilisateurs</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href="clients.html">Clients</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href="produits.html">Produits</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href="commande.html">Commandes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active bg-light text-primary" href="factures.html">
+                    Factures
+                </a>
+            </li>
+        </ul>
 
-<script src="facture.js"></script>
+        <div class="mt-auto p-3 border-top">
+            <small>👤 Admin</small><br>
+            <a href="#" class="text-white text-decoration-underline">Déconnexion</a>
+        </div>
+    </aside>
+
+    <!-- CONTENU -->
+    <main class="flex-grow-1 p-4">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>Gestion des factures</h2>
+            <button class="btn btn-primary" onclick="openAddFacture()">+ Ajouter</button>
+        </div>
+
+        <table class="table table-bordered table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Commande</th>
+                    <th>Date</th>
+                    <th>Montant TTC</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="factureTableBody"></tbody>
+        </table>
+
+    </main>
+</div>
+
+<!-- MODAL -->
+<div class="modal fade" id="factureModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="factureForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Ajouter facture</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <input type="hidden" id="factureId">
+
+                    <div class="mb-3">
+                        <label class="form-label">Commande</label>
+                        <input type="text" id="commande" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Date</label>
+                        <input type="date" id="date" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Montant TTC</label>
+                        <input type="number" id="montant" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Statut</label>
+                        <select id="statut" class="form-select">
+                            <option value="Payée">Payée</option>
+                            <option value="Impayée">Impayée</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-success" type="submit">Enregistrer</button>
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- BOOTSTRAP JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- JS -->
+<script src="factures.js"></script>
 </body>
 </html>
