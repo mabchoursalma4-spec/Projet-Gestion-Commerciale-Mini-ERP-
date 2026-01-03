@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mini ERP</title>
+</head>
+<body>
+
+<script>
+    const user = JSON.parse(localStorage.getItem("erp_logged_user"));
+
+    if (user) {
+        // utilisateur connecté → dashboard
+        window.location.href = "Dashboard.html";
+    } else {
+        // utilisateur non connecté → login
+        window.location.href = "login.html";
+    }
+</script>
+
+</body>
+</html>
