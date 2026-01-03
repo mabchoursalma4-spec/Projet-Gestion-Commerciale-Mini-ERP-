@@ -1,0 +1,142 @@
+[
+  {
+    "id": 1,
+    "nom": "Clé USB 32GB",
+    "categorie": "Electronique",
+    "prix": 89.0,
+    "stock": 120
+  },
+  {
+    "id": 2,
+    "nom": "T-shirt coton",
+    "categorie": "Vêtements",
+    "prix": 149.0,
+    "stock": 75
+  },
+  {
+    "id": 3,
+    "nom": "Café moulu 250g",
+    "categorie": "Alimentation",
+    "prix": 39.5,
+    "stock": 200
+  },
+  {
+    "id": 4,
+    "nom": "Lampe de bureau",
+    "categorie": "Maison",
+    "prix": 229.0,
+    "stock": 34
+  },
+  {
+    "id": 5,
+    "nom": "Perceuse sans fil",
+    "categorie": "Bricolage",
+    "prix": 699.0,
+    "stock": 18
+  },
+  {
+    "id": 6,
+    "nom": "Shampoing 500ml",
+    "categorie": "Beauté",
+    "prix": 59.9,
+    "stock": 150
+  },
+  {
+    "id": 7,
+    "nom": "Chargeur USB-C",
+    "categorie": "Electronique",
+    "prix": 129.0,
+    "stock": 90
+  },
+  {
+    "id": 8,
+    "nom": "Jeans slim",
+    "categorie": "Vêtements",
+    "prix": 299.0,
+    "stock": 45
+  },
+  {
+    "id": 9,
+    "nom": "Huile d'olive 1L",
+    "categorie": "Alimentation",
+    "prix": 89.0,
+    "stock": 60
+  },
+  {
+    "id": 10,
+    "nom": "Oreiller mémoire",
+    "categorie": "Maison",
+    "prix": 349.0,
+    "stock": 26
+  },
+  {
+    "id": 11,
+    "nom": "Visseuse 12V",
+    "categorie": "Bricolage",
+    "prix": 499.0,
+    "stock": 22
+  },
+  {
+    "id": 12,
+    "nom": "Crème visage",
+    "categorie": "Beauté",
+    "prix": 189.0,
+    "stock": 88
+  },
+  {
+    "id": 13,
+    "nom": "Écouteurs Bluetooth",
+    "categorie": "Electronique",
+    "prix": 299.0,
+    "stock": 64
+  },
+  {
+    "id": 14,
+    "nom": "Robe d'été",
+    "categorie": "Vêtements",
+    "prix": 349.0,
+    "stock": 31
+  },
+  {
+    "id": 15,
+    "nom": "Biscuits 400g",
+    "categorie": "Alimentation",
+    "prix": 24.9,
+    "stock": 210
+  },
+  {
+    "id": 16,
+    "nom": "Set de couverts",
+    "categorie": "Maison",
+    "prix": 159.0,
+    "stock": 40
+  },
+  {
+    "id": 17,
+    "nom": "Marteau renforcé",
+    "categorie": "Bricolage",
+    "prix": 119.0,
+    "stock": 55
+  },
+  {
+    "id": 18,
+    "nom": "Palette de maquillage",
+    "categorie": "Beauté",
+    "prix": 199.0,
+    "stock": 70
+  },
+  {
+    "id": 19,
+    "nom": "Chargeur solaire",
+    "categorie": "Electronique",
+    "prix": 249.0,
+    "stock": 29
+  },
+  {
+    "id": 20,
+    "nom": "Sweat à capuche",
+    "categorie": "Vêtements",
+    "prix": 399.0,
+    "stock": 52
+  }
+]
