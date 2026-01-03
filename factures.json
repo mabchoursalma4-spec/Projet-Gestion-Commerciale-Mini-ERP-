@@ -1,0 +1,142 @@
+[
+  {
+    "id": 1,
+    "commande": 1001,
+    "date": "2025-12-15",
+    "montant": 1250.0,
+    "statut": "En attente"
+  },
+  {
+    "id": 2,
+    "commande": 1002,
+    "date": "2025-12-16",
+    "montant": 789.0,
+    "statut": "En attente"
+  },
+  {
+    "id": 3,
+    "commande": 1003,
+    "date": "2025-12-17",
+    "montant": 430.0,
+    "statut": "Payée"
+  },
+  {
+    "id": 4,
+    "commande": 1004,
+    "date": "2025-12-18",
+    "montant": 1599.0,
+    "statut": "En attente"
+  },
+  {
+    "id": 5,
+    "commande": 1005,
+    "date": "2025-12-19",
+    "montant": 215.5,
+    "statut": "Annulée"
+  },
+  {
+    "id": 6,
+    "commande": 1006,
+    "date": "2025-12-20",
+    "montant": 980.0,
+    "statut": "En attente"
+  },
+  {
+    "id": 7,
+    "commande": 1007,
+    "date": "2025-12-21",
+    "montant": 340.0,
+    "statut": "Payée"
+  },
+  {
+    "id": 8,
+    "commande": 1008,
+    "date": "2025-12-22",
+    "montant": 1500.0,
+    "statut": "En attente"
+  },
+  {
+    "id": 9,
+    "commande": 1009,
+    "date": "2025-12-23",
+    "montant": 620.0,
+    "statut": "En attente"
+  },
+  {
+    "id": 10,
+    "commande": 1010,
+    "date": "2025-12-24",
+    "montant": 450.0,
+    "statut": "Payée"
+  },
+  {
+    "id": 11,
+    "commande": 1011,
+    "date": "2025-12-25",
+    "montant": 320.0,
+    "statut": "En attente"
+  },
+  {
+    "id": 12,
+    "commande": 1012,
+    "date": "2025-12-26",
+    "montant": 770.0,
+    "statut": "En attente"
+  },
+  {
+    "id": 13,
+    "commande": 1013,
+    "date": "2025-12-27",
+    "montant": 210.0,
+    "statut": "Annulée"
+  },
+  {
+    "id": 14,
+    "commande": 1014,
+    "date": "2025-12-28",
+    "montant": 1590.0,
+    "statut": "Payée"
+  },
+  {
+    "id": 15,
+    "commande": 1015,
+    "date": "2025-12-29",
+    "montant": 905.0,
+    "statut": "En attente"
+  },
+  {
+    "id": 16,
+    "commande": 1016,
+    "date": "2025-12-30",
+    "montant": 125.0,
+    "statut": "En attente"
+  },
+  {
+    "id": 17,
+    "commande": 1017,
+    "date": "2025-12-31",
+    "montant": 410.0,
+    "statut": "Payée"
+  },
+  {
+    "id": 18,
+    "commande": 1018,
+    "date": "2026-01-01",
+    "montant": 670.0,
+    "statut": "En attente"
+  },
+  {
+    "id": 19,
+    "commande": 1019,
+    "date": "2026-01-02",
+    "montant": 1340.0,
+    "statut": "En attente"
+  },
+  {
+    "id": 20,
+    "commande": 1020,
+    "date": "2026-01-03",
+    "montant": 299.0,
+    "statut": "En attente"
+  }
+]
