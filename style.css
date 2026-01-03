@@ -1,6 +1,8 @@
-/*************************
- RESET GLOBAL
-**************************/
+/*************************************************
+ ODOO-LIKE THEME – MINI ERP
+**************************************************/
+
+/* ========= RESET ========= */
 * {
     box-sizing: border-box;
 }
@@ -8,89 +10,92 @@
 body {
     margin: 0;
     font-family: "Segoe UI", Roboto, Arial, sans-serif;
-    background-color: #f5f7fa; /* fond Odoo */
+    background-color: #f5f7fa;
     color: #374151;
 }
 
-/*************************
- SIDEBAR (STYLE)
-**************************/
+/* ========= BOOTSTRAP THEME OVERRIDE ========= */
+:root {
+    --bs-primary: #1f2a40;     /* Odoo dark */
+    --bs-secondary: #6b7280;
+    --bs-success: #16a34a;
+    --bs-danger: #dc2626;
+    --bs-warning: #f59e0b;
+    --bs-info: #2563eb;
+}
+
+/* ========= SIDEBAR ========= */
 .sidebar {
     position: fixed;
     top: 0;
     left: 0;
     width: 240px;
     height: 100vh;
-    background-color: #1f2a40;
+    background-color: var(--bs-primary);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
     z-index: 1000;
 }
 
-/* Thème Odoo */
-.bg-primary {
-    background-color: #1f2a40 !important; /* Odoo dark */
-}
-
-
-/* Titre sidebar */
+/* Logo / titre */
 .sidebar h4 {
-    font-size: 22px;
-    font-weight: 700;
-    padding: 18px 0;
+    font-size: 18px;
+    font-weight: 600;
+    padding: 18px;
     margin: 0;
     text-align: center;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    background-color: #24324d;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
-/* Liens sidebar */
+/* Menu */
+.sidebar .nav {
+    padding-top: 10px;
+}
+
 .sidebar .nav-link {
-    color: #e5e7eb;
-    font-size: 15px;
+    color: #cfd7e6;
+    font-size: 14px;
     font-weight: 500;
-    padding: 10px 14px;
+    padding: 10px 16px;
     border-radius: 6px;
-    margin-bottom: 4px;
+    margin: 2px 8px;
+    transition: all 0.2s ease;
 }
 
 .sidebar .nav-link:hover {
-    background-color: rgba(255,255,255,0.1);
-    color: #ffffff;
+    background-color: rgba(255,255,255,0.08);
+    color: #fff;
 }
 
-/* Lien actif */
 .sidebar .nav-link.active {
-    background-color: #4f46e5; /* violet Odoo */
-    color: #ffffff;
+    background-color: #4f46e5;
+    color: #fff;
     font-weight: 600;
 }
 
-/* Bas de sidebar */
+/* Footer sidebar */
 .sidebar .border-top {
-    border-top: 1px solid rgba(255,255,255,0.1) !important;
+    border-top: 1px solid rgba(255,255,255,0.08) !important;
 }
 
-/*************************
- CONTENU PRINCIPAL
-**************************/
+/* ========= MAIN CONTENT ========= */
 .main-content {
-    margin-left: 240px;   /* une seule fois */
+    margin-left: 240px;
     padding: 24px;
     min-height: 100vh;
-    background-color: #f5f7fa;
 }
 
-/*************************
- TITRES
-**************************/
+/* ========= TITRES ========= */
 h2 {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 600;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
     color: #111827;
 }
 
-/*************************
- CARTES (ODOO)
-**************************/
+/* ========= CARDS ========= */
 .card {
     background-color: #ffffff;
     border-radius: 8px;
@@ -98,60 +103,43 @@ h2 {
     box-shadow: 0 1px 2px rgba(0,0,0,0.04);
 }
 
-/*************************
- TABLES (ODOO STYLE)
-**************************/
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: #ffffff;
+/* ========= TABLES ========= */
+.table {
+    background-color: #fff;
+    border-radius: 6px;
+    overflow: hidden;
 }
 
-thead {
+.table thead {
     background-color: #f9fafb;
 }
 
-th {
-    font-size: 13px;
+.table th {
+    font-size: 12px;
     font-weight: 600;
-    color: #374151;
-    padding: 10px;
-    border: 1px solid #e5e7eb;
-    text-align: center;
+    text-transform: uppercase;
+    color: #6b7280;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 12px;
 }
 
-td {
+.table td {
     font-size: 14px;
-    padding: 10px;
-    border: 1px solid #e5e7eb;
-    text-align: center;
+    padding: 12px;
+    border-bottom: 1px solid #e5e7eb;
 }
 
-tbody tr:hover {
+.table tbody tr:hover {
     background-color: #f3f4f6;
 }
 
-/*************************
- FORMULAIRES
-**************************/
-input,
-select {
+/* ========= BUTTONS ========= */
+.btn {
     border-radius: 6px;
-    border: 1px solid #d1d5db;
-    padding: 8px 10px;
     font-size: 14px;
+    padding: 6px 14px;
 }
 
-input:focus,
-select:focus {
-    outline: none;
-    border-color: #4f46e5;
-    box-shadow: 0 0 0 2px rgba(79,70,229,0.2);
-}
-
-/*************************
- BOUTONS
-**************************/
 .btn-primary {
     background-color: #4f46e5;
     border-color: #4f46e5;
@@ -162,9 +150,9 @@ select:focus {
     border-color: #4338ca;
 }
 
-.btn-secondary {
-    background-color: #6b7280;
-    border-color: #6b7280;
+.btn-warning {
+    background-color: #f59e0b;
+    border-color: #f59e0b;
 }
 
 .btn-danger {
@@ -172,9 +160,90 @@ select:focus {
     border-color: #dc2626;
 }
 
-/*************************
- MODAL (Bootstrap + Odoo)
-**************************/
+/* ========= FORM ========= */
+input,
+select {
+    border-radius: 6px !important;
+    border: 1px solid #d1d5db !important;
+    font-size: 14px;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: #4f46e5 !important;
+    box-shadow: 0 0 0 2px rgba(79,70,229,0.15);
+}
+
+/* ========= MODAL ========= */
 .modal-content {
     border-radius: 8px;
+    border: none;
 }
+
+/* ========= BADGES ========= */
+.badge {
+    font-size: 12px;
+    padding: 5px 8px;
+    border-radius: 6px;
+}
+
+/* ========= SCROLLBAR (bonus) ========= */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #c7cdd6;
+    border-radius: 6px;
+}
+/*********************************
+ LOGIN – ODOO STYLE
+**********************************/
+.login-body {
+    background-color: #f5f7fa;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 420px;
+    padding: 15px;
+}
+
+.login-card {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    border: 1px solid #e5e7eb;
+}
+
+.login-card h3 {
+    font-weight: 600;
+    color: #111827;
+}
+
+.login-card .form-label {
+    font-size: 14px;
+    color: #374151;
+}
+
+.login-card .form-control {
+    padding: 10px 12px;
+    font-size: 14px;
+}
+
+.login-card .btn-primary {
+    background-color: #4f46e5;
+    border-color: #4f46e5;
+}
+
+.login-card .btn-primary:hover {
+    background-color: #4338ca;
+    border-color: #4338ca;
+}
+
