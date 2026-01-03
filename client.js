@@ -1,91 +1,145 @@
-let clients = JSON.parse(localStorage.getItem("clients")) || [];
+/*****************************************
+ * CRUD CLIENT - localStorage
+ *****************************************/
 
-const form = document.getElementById("clientForm");
-const table = document.getElementById("clientTable");
+const STORAGE_KEY = "erp_clients";
+let clientModalInstance = null;
 
-/* =========================
-   AFFICHAGE DES CLIENTS
-========================= */
-function afficherClients() {
-  if (!table) return;
+document.addEventListener("DOMContentLoaded", () => {
+    loadClients();
 
-  table.innerHTML = "";
+    const modalEl = document.getElementById("clientModal");
+    if (modalEl && window.bootstrap) {
+        clientModalInstance = new bootstrap.Modal(modalEl);
+    }
 
-  if (clients.length === 0) {
-    table.innerHTML = `<tr><td colspan="5">Aucun client</td></tr>`;
-    return;
-  }
+    const form = document.getElementById("clientForm");
+    if (form) {
+        form.addEventListener("submit", onSubmitClientForm);
+    }
+});
 
-  clients.forEach((c, index) => {
-    table.innerHTML += `
-      <tr>
-        <td>${index + 1}</td>
-        <td>${c.nom}</td>
-        <td>${c.prenom}</td>
-        <td>${c.email}</td>
-        <td>
-          <button type="button" class="btn btn-sm btn-outline-primary" onclick="voirClient(${index})">👁</button>
-          <button type="button" class="btn btn-sm btn-outline-danger" onclick="supprimerClient(${index})">🗑</button>
-        </td>
-      </tr>
-    `;
-  });
+/* STORAGE */
+function getClients() {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 }
 
-/* =========================
-   AJOUT CLIENT
-========================= */
-if (form) {
-  const nom = document.getElementById("nom");
-  const prenom = document.getElementById("prenom");
-  const email = document.getElementById("email");
-  const telephone = document.getElementById("telephone");
-  const adresse = document.getElementById("adresse");
+function saveClients(data) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
 
-  form.addEventListener("submit", function (e) {
+/* LISTE */
+function loadClients() {
+    const tbody = document.getElementById("clientTableBody");
+    if (!tbody) return;
+
+    const clients = getClients();
+    tbody.innerHTML = "";
+
+    if (clients.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center">Aucun client</td></tr>`;
+        return;
+    }
+
+    clients.forEach((c, index) => {
+        tbody.innerHTML += `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${escapeHtml(c.nom)}</td>
+                <td>${escapeHtml(c.email)}</td>
+                <td>${escapeHtml(c.telephone)}</td>
+                <td class="d-flex gap-2">
+                    <a class="btn btn-sm btn-info" href="clients-details.html?id=${c.id}">Voir</a>
+                    <button class="btn btn-sm btn-warning" onclick="editClient(${c.id})">Modifier</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteClient(${c.id})">Supprimer</button>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+/* MODAL */
+function openAddClient() {
+    document.getElementById("clientForm").reset();
+    document.getElementById("clientId").value = "";
+    document.getElementById("modalTitle").innerText = "Ajouter client";
+    clientModalInstance.show();
+}
+
+/* SUBMIT */
+function onSubmitClientForm(e) {
     e.preventDefault();
 
-    const client = {
-      nom: nom.value.trim(),
-      prenom: prenom.value.trim(),
-      email: email.value.trim(),
-      telephone: telephone.value.trim(),
-      adresse: adresse.value.trim(),
-      dateCreation: new Date().toLocaleDateString()
-    };
+    const id = document.getElementById("clientId").value;
+    const nom = document.getElementById("nom").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const telephone = document.getElementById("telephone").value.trim();
+    const adresse = document.getElementById("adresse").value.trim();
 
-    clients.push(client);
-    localStorage.setItem("clients", JSON.stringify(clients));
+    let clients = getClients();
 
-    form.reset();
-    afficherClients();
-  });
+    if (id) {
+        clients = clients.map(c =>
+            String(c.id) === id ? { ...c, nom, email, telephone, adresse } : c
+        );
+    } else {
+        clients.push({
+            id: Date.now(),
+            nom,
+            email,
+            telephone,
+            adresse
+        });
+    }
+
+    saveClients(clients);
+    clientModalInstance.hide();
+    loadClients();
 }
 
-/* =========================
-   SUPPRESSION
-========================= */
-function supprimerClient(index) {
-  if (!clients[index]) return;
+/* EDIT */
+function editClient(id) {
+    const c = getClients().find(x => x.id === id);
+    if (!c) return;
 
-  if (confirm("Supprimer ce client ?")) {
-    clients.splice(index, 1);
-    localStorage.setItem("clients", JSON.stringify(clients));
-    afficherClients();
-  }
+    document.getElementById("modalTitle").innerText = "Modifier client";
+    document.getElementById("clientId").value = c.id;
+    document.getElementById("nom").value = c.nom;
+    document.getElementById("email").value = c.email;
+    document.getElementById("telephone").value = c.telephone;
+    document.getElementById("adresse").value = c.adresse;
+
+    clientModalInstance.show();
 }
 
-/* =========================
-   VOIR DÉTAILS
-========================= */
-function voirClient(index) {
-  if (!clients[index]) return;
-
-  localStorage.setItem("clientIndex", index);
-  window.location.href = "clients-details.html";
+/* DELETE */
+function deleteClient(id) {
+    if (!confirm("Supprimer ce client ?")) return;
+    saveClients(getClients().filter(c => c.id !== id));
+    loadClients();
 }
 
-afficherClients();
+/* DETAILS */
+function loadClientDetails() {
+    const params = new URLSearchParams(window.location.search);
+    const id = Number(params.get("id"));
+    if (!id) return;
 
-window.supprimerClient = supprimerClient;
-window.voirClient = voirClient;
+    const c = getClients().find(x => x.id === id);
+    if (!c) return;
+
+    document.getElementById("detailNom").innerText = c.nom;
+    document.getElementById("detailEmail").innerText = c.email;
+    document.getElementById("detailTelephone").innerText = c.telephone;
+    document.getElementById("detailAdresse").innerText = c.adresse;
+}
+
+/* UTILS */
+function escapeHtml(str) {
+    return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
