@@ -13,3 +13,68 @@
   font-size: 25px ;
   font-weight: 700;
 }
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  background: #f4f6f8;
+}
+
+h2 {
+  margin-bottom: 10px;
+}
+
+/* NAVBAR */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  background: #1f2937;
+  padding: 12px 18px;
+  border-radius: 10px;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  margin-left: 10px;
+}
+
+.navbar a.active {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+/* PAGE */
+.page {
+  margin-top: 20px;
+}
+
+/* CARD */
+.card {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+/* FORM */
+form input {
+  padding: 8px;
+  margin: 5px;
+}
+
+/* TABLE */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+}
+
+button {
+  cursor: pointer;
+}
