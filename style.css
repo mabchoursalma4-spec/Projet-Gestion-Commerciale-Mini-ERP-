@@ -1,80 +1,180 @@
-.sidebar {
-    width:240px;
-    min-height: 100vh;
-}
-/* sidebar */
-.sidebar .nav-link{
-  font-size: 19px ; 
-  font-weight: 400; 
+/*************************
+ RESET GLOBAL
+**************************/
+* {
+    box-sizing: border-box;
 }
 
-/* titre sidebar */
-.sidebar h4{
-  font-size: 25px ;
-  font-weight: 700;
-}
 body {
-  font-family: Arial, sans-serif;
-  margin: 20px;
-  background: #f4f6f8;
+    margin: 0;
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    background-color: #f5f7fa; /* fond Odoo */
+    color: #374151;
 }
 
+/*************************
+ SIDEBAR (STYLE)
+**************************/
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 240px;
+    height: 100vh;
+    background-color: #1f2a40;
+    z-index: 1000;
+}
+
+/* Thème Odoo */
+.bg-primary {
+    background-color: #1f2a40 !important; /* Odoo dark */
+}
+
+
+/* Titre sidebar */
+.sidebar h4 {
+    font-size: 22px;
+    font-weight: 700;
+    padding: 18px 0;
+    margin: 0;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Liens sidebar */
+.sidebar .nav-link {
+    color: #e5e7eb;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 10px 14px;
+    border-radius: 6px;
+    margin-bottom: 4px;
+}
+
+.sidebar .nav-link:hover {
+    background-color: rgba(255,255,255,0.1);
+    color: #ffffff;
+}
+
+/* Lien actif */
+.sidebar .nav-link.active {
+    background-color: #4f46e5; /* violet Odoo */
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* Bas de sidebar */
+.sidebar .border-top {
+    border-top: 1px solid rgba(255,255,255,0.1) !important;
+}
+
+/*************************
+ CONTENU PRINCIPAL
+**************************/
+.main-content {
+    margin-left: 240px;   /* une seule fois */
+    padding: 24px;
+    min-height: 100vh;
+    background-color: #f5f7fa;
+}
+
+/*************************
+ TITRES
+**************************/
 h2 {
-  margin-bottom: 10px;
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #111827;
 }
 
-/* NAVBAR */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  background: #1f2937;
-  padding: 12px 18px;
-  border-radius: 10px;
-}
-
-.navbar a {
-  color: white;
-  text-decoration: none;
-  margin-left: 10px;
-}
-
-.navbar a.active {
-  font-weight: bold;
-  text-decoration: underline;
-}
-
-/* PAGE */
-.page {
-  margin-top: 20px;
-}
-
-/* CARD */
+/*************************
+ CARTES (ODOO)
+**************************/
 .card {
-  background: white;
-  padding: 15px;
-  border-radius: 10px;
-  margin-bottom: 15px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
 }
 
-/* FORM */
-form input {
-  padding: 8px;
-  margin: 5px;
-}
-
-/* TABLE */
+/*************************
+ TABLES (ODOO STYLE)
+**************************/
 table {
-  width: 100%;
-  border-collapse: collapse;
-  background: white;
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff;
 }
 
-th, td {
-  border: 1px solid #ccc;
-  padding: 8px;
-  text-align: center;
+thead {
+    background-color: #f9fafb;
 }
 
-button {
-  cursor: pointer;
+th {
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    padding: 10px;
+    border: 1px solid #e5e7eb;
+    text-align: center;
+}
+
+td {
+    font-size: 14px;
+    padding: 10px;
+    border: 1px solid #e5e7eb;
+    text-align: center;
+}
+
+tbody tr:hover {
+    background-color: #f3f4f6;
+}
+
+/*************************
+ FORMULAIRES
+**************************/
+input,
+select {
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    padding: 8px 10px;
+    font-size: 14px;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 2px rgba(79,70,229,0.2);
+}
+
+/*************************
+ BOUTONS
+**************************/
+.btn-primary {
+    background-color: #4f46e5;
+    border-color: #4f46e5;
+}
+
+.btn-primary:hover {
+    background-color: #4338ca;
+    border-color: #4338ca;
+}
+
+.btn-secondary {
+    background-color: #6b7280;
+    border-color: #6b7280;
+}
+
+.btn-danger {
+    background-color: #dc2626;
+    border-color: #dc2626;
+}
+
+/*************************
+ MODAL (Bootstrap + Odoo)
+**************************/
+.modal-content {
+    border-radius: 8px;
 }
