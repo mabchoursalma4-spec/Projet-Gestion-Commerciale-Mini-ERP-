@@ -13,7 +13,7 @@
 </head>
 <body>
 
-<div class="d-flex">
+
 
     <!-- SIDEBAR -->
     <aside class="sidebar bg-primary text-white">
@@ -33,7 +33,7 @@
                 <a class="nav-link text-white" href="produits.html">Produits</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white" href="commande.html">Commandes</a>
+                <a class="nav-link text-white" href="commandes.html">Commandes</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link active bg-light text-primary" href="factures.html">
@@ -49,12 +49,9 @@
     </aside>
 
     <!-- CONTENU -->
-    <main class="flex-grow-1 p-4">
-
-        <div class="d-flex justify-content-between align-items-center mb-3">
+    <main class="main-content">
             <h2>Gestion des factures</h2>
             <button class="btn btn-primary" onclick="openAddFacture()">+ Ajouter</button>
-        </div>
 
         <table class="table table-bordered table-hover">
             <thead class="table-light">
@@ -71,7 +68,7 @@
         </table>
 
     </main>
-</div>
+
 
 <!-- MODAL -->
 <div class="modal fade" id="factureModal" tabindex="-1">
