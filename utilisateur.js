@@ -7,10 +7,25 @@ const STORAGE_KEY = "erp_utilisateurs";
 
 // Bootstrap modal instance (créée quand la page contient la modal)
 let utilisateurModalInstance = null;
+// Liste des utilisateurs chargée depuis `utilisateurs.json` (modifications en mémoire)
+let utilisateurs = []; 
 
 document.addEventListener("DOMContentLoaded", () => {
-    // Si la page contient la table, on charge la liste
-    loadUtilisateurs();
+    // Si la page contient la table, charger depuis le fichier JSON
+    const tbody = document.getElementById("utilisateurTableBody");
+    if (tbody) {
+        fetch("utilisateurs.json")
+            .then(res => res.json())
+            .then(data => {
+                utilisateurs = data;
+                loadUtilisateurs();
+            })
+            .catch(err => {
+                console.error("Erreur chargement utilisateurs.json :", err);
+                utilisateurs = [];
+                loadUtilisateurs();
+            });
+    }
 
     // Si la page contient la modal, on prépare l'instance Bootstrap
     const modalEl = document.getElementById("utilisateurModal");
@@ -43,10 +58,9 @@ function loadUtilisateurs() {
     const tbody = document.getElementById("utilisateurTableBody");
     if (!tbody) return; // si on est sur details.html, pas de table
 
-    const utilisateurs = getUtilisateurs();
     tbody.innerHTML = "";
 
-    if (utilisateurs.length === 0) {
+    if (!utilisateurs || utilisateurs.length === 0) {
         tbody.innerHTML = `
             <tr>
                 <td colspan="5" class="text-center">Aucun utilisateur</td>
@@ -72,7 +86,7 @@ function loadUtilisateurs() {
             </tr>
         `;
     });
-}
+} 
 
 /* =======================
    MODAL - OUVRIR AJOUT
@@ -103,15 +117,15 @@ function onSubmitUtilisateurForm(e) {
 
     if (!nom || !email) return;
 
-    let utilisateurs = getUtilisateurs();
+    if (!utilisateurs) utilisateurs = [];
 
     if (id) {
-        // MODIFIER
+        // MODIFIER en mémoire
         utilisateurs = utilisateurs.map(u =>
             String(u.id) === String(id) ? { ...u, nom, email, role } : u
         );
     } else {
-        // AJOUTER
+        // AJOUTER en mémoire
         utilisateurs.push({
             id: Date.now(),
             nom,
@@ -120,20 +134,19 @@ function onSubmitUtilisateurForm(e) {
         });
     }
 
-    saveUtilisateurs(utilisateurs);
-
     // fermer modal bootstrap
     if (utilisateurModalInstance) utilisateurModalInstance.hide();
 
     // refresh table
     loadUtilisateurs();
-}
+} 
 
 /* =======================
    EDIT
 ======================= */
 function editUtilisateur(id) {
-    const u = getUtilisateurs().find(x => x.id === id);
+    if (!utilisateurs) utilisateurs = [];
+    const u = utilisateurs.find(x => x.id === id);
     if (!u) return;
 
     document.getElementById("modalTitle").innerText = "Modifier utilisateur";
@@ -143,7 +156,7 @@ function editUtilisateur(id) {
     document.getElementById("role").value = u.role;
 
     if (utilisateurModalInstance) utilisateurModalInstance.show();
-}
+} 
 
 /* =======================
    DELETE
@@ -151,31 +164,50 @@ function editUtilisateur(id) {
 function deleteUtilisateur(id) {
     if (!confirm("Supprimer cet utilisateur ?")) return;
 
-    const restants = getUtilisateurs().filter(u => u.id !== id);
-    saveUtilisateurs(restants);
+    if (!utilisateurs) utilisateurs = [];
+    utilisateurs = utilisateurs.filter(u => u.id !== id);
     loadUtilisateurs();
-}
+} 
 
 /* =======================
    DETAILS PAGE
 ======================= */
 function loadUtilisateurDetails() {
     const params = new URLSearchParams(window.location.search);
-    const id = Number(params.get("id"));
-    if (!id) return;
+    const rawId = params.get("id");
+    if (!rawId) return;
 
-    const u = getUtilisateurs().find(x => x.id === id);
-    if (!u) return;
+    const id = Number(rawId);
+    if (Number.isNaN(id)) return;
 
-    const roleLabel = (u.role === "admin") ? "Admin" : "Utilisateur";
+    const show = (u) => {
+        if (!u) return;
+        const roleLabel = (u.role === "admin") ? "Admin" : "Utilisateur";
 
-    const nomEl = document.getElementById("detailNom");
-    const emailEl = document.getElementById("detailEmail");
-    const roleEl = document.getElementById("detailRole");
+        const nomEl = document.getElementById("detailNom");
+        const emailEl = document.getElementById("detailEmail");
+        const roleEl = document.getElementById("detailRole");
 
-    if (nomEl) nomEl.innerText = u.nom;
-    if (emailEl) emailEl.innerText = u.email;
-    if (roleEl) roleEl.innerText = roleLabel;
+        if (nomEl) nomEl.innerText = u.nom;
+        if (emailEl) emailEl.innerText = u.email;
+        if (roleEl) roleEl.innerText = roleLabel;
+    };
+
+    // Chercher en mémoire
+    if (utilisateurs && utilisateurs.length > 0) {
+        const u = utilisateurs.find(x => Number(x.id) === Number(id));
+        if (u) { show(u); return; }
+    }
+
+    // fallback JSON
+    fetch("utilisateurs.json")
+        .then(res => res.json())
+        .then(data => {
+            utilisateurs = data;
+            const u = utilisateurs.find(x => Number(x.id) === Number(id));
+            show(u);
+        })
+        .catch(err => console.error("Erreur chargement utilisateurs.json :", err));
 }
 
 /* =======================
