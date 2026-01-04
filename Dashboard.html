@@ -87,6 +87,37 @@
             
             <!-- Ligne 1 -->
             <div class="chart-row">
+                <!-- Utilisateurs par Rôle -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-users me-2"></i> Utilisateurs par Rôle</h3>
+                        <span class="chart-badge bg-info">Utilisateurs</span>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="utilisateursChart"></canvas>
+                    </div>
+                    <div class="chart-footer">
+                        Total: <span id="totalUtilisateurs">0</span> utilisateurs
+                    </div>
+                </div>
+
+                <!-- Clients par Ville -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-building me-2"></i> Top 5 Villes de Clients</h3>
+                        <span class="chart-badge bg-warning">Clients</span>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="clientsChart"></canvas>
+                    </div>
+                    <div class="chart-footer">
+                        Total: <span id="totalClients">0</span> clients
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ligne 2 -->
+            <div class="chart-row">
                 <!-- Produits par Catégorie -->
                 <div class="chart-card">
                     <div class="chart-header">
@@ -116,7 +147,7 @@
                 </div>
             </div>
 
-            <!-- Ligne 2 - Centré -->
+            <!-- Ligne 3 - Centré -->
             <div class="chart-row" style="justify-content: center;">
                 <!-- Factures par Statut -->
                 <div class="chart-card" style="max-width: 800px;">
@@ -143,16 +174,16 @@
     <!-- DASHBOARD JS -->
     <script src="dashboard.js"></script>
     <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const btn = document.getElementById("logoutBtn");
-    if (btn) {
-      btn.addEventListener("click", (e) => {
-        e.preventDefault();
-        logout();
-      });
-    }
-  });
-</script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const btn = document.getElementById("logoutBtn");
+            if (btn) {
+                btn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    logout();
+                });
+            }
+        });
+    </script>
 
 </body>
 </html>
