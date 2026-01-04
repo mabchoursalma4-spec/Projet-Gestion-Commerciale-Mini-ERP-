@@ -64,7 +64,7 @@ body {
     transition: all 0.2s ease;
 }
 
-.sidebar .nav-link:nth-child(1) {
+.sidebar .nav-link.dashboard-link {
     color: #722f37;
 }
 
@@ -201,6 +201,39 @@ select:focus {
     font-size: 12px;
     padding: 5px 8px;
     border-radius: 6px;
+    background-color: #722f37 !important;
+    color: white !important;
+}
+
+/* Override Bootstrap button colors for actions */
+.btn-warning {
+    background: linear-gradient(135deg, #722f37 0%, #ff69b4 50%, #dc2626 100%) !important;
+    border-color: #722f37 !important;
+}
+
+.btn-warning:hover {
+    background: linear-gradient(135deg, #5a2329 0%, #e055a0 50%, #b91c1c 100%) !important;
+    border-color: #5a2329 !important;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #722f37 0%, #ff69b4 50%, #dc2626 100%) !important;
+    border-color: #722f37 !important;
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, #5a2329 0%, #e055a0 50%, #b91c1c 100%) !important;
+    border-color: #5a2329 !important;
+}
+
+.btn-info {
+    background: linear-gradient(135deg, #722f37 0%, #ff69b4 50%, #dc2626 100%) !important;
+    border-color: #722f37 !important;
+}
+
+.btn-info:hover {
+    background: linear-gradient(135deg, #5a2329 0%, #e055a0 50%, #b91c1c 100%) !important;
+    border-color: #5a2329 !important;
 }
 
 /* ========= SCROLLBAR (bonus) ========= */
