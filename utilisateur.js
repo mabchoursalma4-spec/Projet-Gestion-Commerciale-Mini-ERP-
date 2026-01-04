@@ -3,20 +3,8 @@
  * Pattern IDENTIQUE à commandes.js
  *********************************/
 
-const UTILISATEURS_KEY = "erp_utilisateurs";
 let utilisateurs = [];
 let utilisateurModalInstance = null;
-
-/* =========================
-   STORAGE
-========================= */
-function getUtilisateurs() {
-    return JSON.parse(localStorage.getItem(UTILISATEURS_KEY)) || [];
-}
-
-function saveUtilisateurs(data) {
-    localStorage.setItem(UTILISATEURS_KEY, JSON.stringify(data));
-}
 
 /* =========================
    INIT
@@ -35,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
         form.addEventListener("submit", onSubmitUtilisateurForm);
     }
 
-    // ✅ APPEL (comme commandes.js)
+    // ✅ EXACTEMENT comme commandes.js
     loadUtilisateurs();
 
     // Page détails
@@ -43,11 +31,14 @@ document.addEventListener("DOMContentLoaded", () => {
         loadUtilisateurDetails();
     }
 });
+
+/* =========================
+   LOAD (comme loadCommandes)
+========================= */
 function loadUtilisateurs() {
     const tbody = document.getElementById("utilisateurTableBody");
-    if (!tbody) return; // si on est sur details.html, pas de table
+    if (!tbody) return;
 
-    // Charger directement depuis le fichier JSON local
     fetch("utilisateurs.json")
         .then(res => res.json())
         .then(data => {
@@ -62,44 +53,7 @@ function loadUtilisateurs() {
 }
 
 /* =========================
-   INIT FROM API (OPTIONNEL)
-   (IDENTIQUE à fetchInitialCommandes)
-========================= */
-function fetchInitialUtilisateurs() {
-    return fetch("https://dummyjson.com/users")
-        .then(res => res.json())
-        .then(data => {
-            const seed = data.users.slice(0, 20).map((user, index) => ({
-                id: Date.now() + user.id,
-                nom: user.firstName + " " + user.lastName,
-                email: user.email,
-                role: index === 0 ? "admin" : "utilisateur"
-            }));
-
-            saveUtilisateurs(seed);
-            utilisateurs = seed;
-        });
-}
-
-/* =========================
-   LOAD (comme loadCommandes)
-========================= */
-function loadUtilisateurs() {
-    const tbody = document.getElementById("utilisateurTableBody");
-    if (!tbody) return;
-
-    utilisateurs = getUtilisateurs();
-
-    // Si vide → optionnellement initialiser
-    if (utilisateurs.length === 0) {
-        fetchInitialUtilisateurs().then(renderUtilisateurs);
-    } else {
-        renderUtilisateurs();
-    }
-}
-
-/* =========================
-   RENDER (comme renderCommandes)
+   RENDER
 ========================= */
 function renderUtilisateurs() {
     const tbody = document.getElementById("utilisateurTableBody");
@@ -111,8 +65,7 @@ function renderUtilisateurs() {
         tbody.innerHTML = `
             <tr>
                 <td colspan="5" class="text-center">Aucun utilisateur</td>
-            </tr>
-        `;
+            </tr>`;
         return;
     }
 
@@ -131,9 +84,88 @@ function renderUtilisateurs() {
                     <button class="btn btn-sm btn-danger"
                             onclick="deleteUtilisateur(${u.id})">Supprimer</button>
                 </td>
-            </tr>
-        `;
+            </tr>`;
     });
+}
+
+/* =========================
+   CRUD EN MÉMOIRE (comme commandes)
+========================= */
+function onSubmitUtilisateurForm(e) {
+    e.preventDefault();
+
+    const id = document.getElementById("utilisateurId").value;
+    const nom = document.getElementById("nom").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const role = document.getElementById("role").value;
+
+    if (!nom || !email) return;
+
+    if (id) {
+        utilisateurs = utilisateurs.map(u =>
+            String(u.id) === String(id) ? { ...u, nom, email, role } : u
+        );
+    } else {
+        utilisateurs.unshift({
+            id: Date.now(),
+            nom,
+            email,
+            role
+        });
+    }
+
+    utilisateurModalInstance?.hide();
+    renderUtilisateurs();
+}
+
+function editUtilisateur(id) {
+    const u = utilisateurs.find(x => x.id === id);
+    if (!u) return;
+
+    document.getElementById("utilisateurId").value = u.id;
+    document.getElementById("nom").value = u.nom;
+    document.getElementById("email").value = u.email;
+    document.getElementById("role").value = u.role;
+
+    utilisateurModalInstance?.show();
+}
+
+function deleteUtilisateur(id) {
+    if (!confirm("Supprimer cet utilisateur ?")) return;
+    utilisateurs = utilisateurs.filter(u => u.id !== id);
+    renderUtilisateurs();
+}
+
+/* =========================
+   DETAILS
+========================= */
+function loadUtilisateurDetails() {
+    const id = Number(new URLSearchParams(window.location.search).get("id"));
+    if (!id) return;
+
+    fetch("utilisateurs.json")
+        .then(res => res.json())
+        .then(data => {
+            const u = data.find(x => Number(x.id) === id);
+            if (!u) return;
+
+            document.getElementById("detailNom").innerText = u.nom;
+            document.getElementById("detailEmail").innerText = u.email;
+            document.getElementById("detailRole").innerText =
+                u.role === "admin" ? "Admin" : "Utilisateur";
+        });
+}
+
+/* =========================
+   UTILS
+========================= */
+function escapeHtml(str) {
+    return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
 }
 
 /* =========================
