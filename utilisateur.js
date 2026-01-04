@@ -1,22 +1,21 @@
 /*********************************
- * CRUD UTILISATEURS – FETCH + localStorage
- * Mini-ERP (Projet scolaire)
+ * CRUD UTILISATEURS
+ * Pattern IDENTIQUE à commandes.js
  *********************************/
 
+const UTILISATEURS_KEY = "erp_utilisateurs";
 let utilisateurs = [];
 let utilisateurModalInstance = null;
-
-const STORAGE_KEY = "erp_utilisateurs";
 
 /* =========================
    STORAGE
 ========================= */
-function saveUtilisateurs(data) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+function getUtilisateurs() {
+    return JSON.parse(localStorage.getItem(UTILISATEURS_KEY)) || [];
 }
 
-function getUtilisateurs() {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+function saveUtilisateurs(data) {
+    localStorage.setItem(UTILISATEURS_KEY, JSON.stringify(data));
 }
 
 /* =========================
@@ -24,16 +23,7 @@ function getUtilisateurs() {
 ========================= */
 document.addEventListener("DOMContentLoaded", () => {
 
-    // 🔁 Initialisation intelligente
-    if (getUtilisateurs().length === 0) {
-        // Première fois → seed depuis API
-        fetchInitialUtilisateurs();
-    } else {
-        // Déjà initialisé → lecture locale
-        fetchUtilisateurs();
-    }
-
-    // Bootstrap modal
+    // Modal Bootstrap
     const modalEl = document.getElementById("utilisateurModal");
     if (modalEl && window.bootstrap) {
         utilisateurModalInstance = new bootstrap.Modal(modalEl);
@@ -45,6 +35,9 @@ document.addEventListener("DOMContentLoaded", () => {
         form.addEventListener("submit", onSubmitUtilisateurForm);
     }
 
+    // Charger la liste (comme loadCommandes)
+    loadUtilisateurs();
+
     // Page détails
     if (document.getElementById("detailNom")) {
         loadUtilisateurDetails();
@@ -52,62 +45,67 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* =========================
-   FETCH LOCAL
-========================= */
-function fetchUtilisateurs() {
-    utilisateurs = getUtilisateurs();
-    loadUtilisateurs();
-}
-
-/* =========================
-   FETCH INITIAL (API)
+   INIT FROM API (OPTIONNEL)
+   (IDENTIQUE à fetchInitialCommandes)
 ========================= */
 function fetchInitialUtilisateurs() {
     return fetch("https://dummyjson.com/users")
         .then(res => res.json())
         .then(data => {
-            const seed = data.users.map(user => ({
+            const seed = data.users.slice(0, 20).map((user, index) => ({
                 id: Date.now() + user.id,
                 nom: user.firstName + " " + user.lastName,
                 email: user.email,
-                role: "utilisateur"
+                role: index === 0 ? "admin" : "utilisateur"
             }));
 
             saveUtilisateurs(seed);
             utilisateurs = seed;
-            loadUtilisateurs();
-        })
-        .catch(err => {
-            console.error("Erreur fetchInitialUtilisateurs :", err);
         });
 }
 
 /* =========================
-   LISTE
+   LOAD (comme loadCommandes)
 ========================= */
 function loadUtilisateurs() {
     const tbody = document.getElementById("utilisateurTableBody");
     if (!tbody) return;
 
+    utilisateurs = getUtilisateurs();
+
+    // Si vide → optionnellement initialiser
+    if (utilisateurs.length === 0) {
+        fetchInitialUtilisateurs().then(renderUtilisateurs);
+    } else {
+        renderUtilisateurs();
+    }
+}
+
+/* =========================
+   RENDER (comme renderCommandes)
+========================= */
+function renderUtilisateurs() {
+    const tbody = document.getElementById("utilisateurTableBody");
+    if (!tbody) return;
+
     tbody.innerHTML = "";
 
-    if (utilisateurs.length === 0) {
+    if (!utilisateurs || utilisateurs.length === 0) {
         tbody.innerHTML = `
             <tr>
                 <td colspan="5" class="text-center">Aucun utilisateur</td>
-            </tr>`;
+            </tr>
+        `;
         return;
     }
 
     utilisateurs.forEach((u, index) => {
-        const roleLabel = u.role === "admin" ? "Admin" : "Utilisateur";
-
         tbody.innerHTML += `
             <tr>
                 <td>${index + 1}</td>
                 <td>${escapeHtml(u.nom)}</td>
                 <td>${escapeHtml(u.email)}</td>
-                <td>${roleLabel}</td>
+                <td>${u.role === "admin" ? "Admin" : "Utilisateur"}</td>
                 <td class="d-flex gap-2">
                     <a class="btn btn-sm btn-info"
                        href="utilisateur-details.html?id=${u.id}">Voir</a>
@@ -116,7 +114,8 @@ function loadUtilisateurs() {
                     <button class="btn btn-sm btn-danger"
                             onclick="deleteUtilisateur(${u.id})">Supprimer</button>
                 </td>
-            </tr>`;
+            </tr>
+        `;
     });
 }
 
@@ -131,7 +130,7 @@ function openAddUtilisateur() {
 }
 
 /* =========================
-   SUBMIT (AJOUT / MODIF)
+   SUBMIT (EN MÉMOIRE)
 ========================= */
 function onSubmitUtilisateurForm(e) {
     e.preventDefault();
@@ -144,13 +143,13 @@ function onSubmitUtilisateurForm(e) {
     if (!nom || !email) return;
 
     if (id) {
-        // MODIFIER
         utilisateurs = utilisateurs.map(u =>
-            u.id == id ? { ...u, nom, email, role } : u
+            String(u.id) === String(id)
+                ? { ...u, nom, email, role }
+                : u
         );
     } else {
-        // AJOUTER
-        utilisateurs.push({
+        utilisateurs.unshift({
             id: Date.now(),
             nom,
             email,
@@ -160,7 +159,7 @@ function onSubmitUtilisateurForm(e) {
 
     saveUtilisateurs(utilisateurs);
     utilisateurModalInstance?.hide();
-    loadUtilisateurs();
+    renderUtilisateurs();
 }
 
 /* =========================
@@ -180,14 +179,20 @@ function editUtilisateur(id) {
 }
 
 /* =========================
-   DELETE
+   DELETE (EN MÉMOIRE)
 ========================= */
 function deleteUtilisateur(id) {
+    const u = utilisateurs.find(x => x.id === id);
+    if (u?.role === "admin") {
+        alert("Impossible de supprimer un administrateur");
+        return;
+    }
+
     if (!confirm("Supprimer cet utilisateur ?")) return;
 
     utilisateurs = utilisateurs.filter(u => u.id !== id);
     saveUtilisateurs(utilisateurs);
-    loadUtilisateurs();
+    renderUtilisateurs();
 }
 
 /* =========================
@@ -197,7 +202,7 @@ function loadUtilisateurDetails() {
     const params = new URLSearchParams(window.location.search);
     const id = Number(params.get("id"));
 
-    const u = getUtilisateurs().find(x => x.id === id);
+    const u = getUtilisateurs().find(x => Number(x.id) === id);
     if (!u) return;
 
     document.getElementById("detailNom").innerText = u.nom;
