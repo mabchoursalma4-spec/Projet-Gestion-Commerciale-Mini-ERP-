@@ -1,65 +1,86 @@
 /*********************************
- * CRUD CLIENTS – FETCH JSON
+ * CRUD CLIENTS – FETCH + localStorage
  * Mini-ERP (Projet scolaire)
  *********************************/
 
 let clients = [];
 let clientModalInstance = null;
-// Liste des clients chargée depuis `clients.json` (modifications en mémoire/volatiles)
-let clients = []; 
+
+const STORAGE_KEY_CLIENTS = "erp_clients";
+
+/* =========================
+   STORAGE
+========================= */
+function saveClients(data) {
+    localStorage.setItem(STORAGE_KEY_CLIENTS, JSON.stringify(data));
+}
+
+function getClients() {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY_CLIENTS)) || [];
+}
 
 /* =========================
    INIT
 ========================= */
 document.addEventListener("DOMContentLoaded", () => {
-<<<<<<< Updated upstream
-    // Si on est sur la page de liste, charger depuis clients.json
-    const tbody = document.getElementById("clientTableBody");
-    if (tbody) {
-        fetch("clients.json")
-            .then(res => res.json())
-            .then(data => {
-                clients = data;
-                loadClients();
-            })
-            .catch(err => {
-                console.error("Erreur chargement clients.json :", err);
-                clients = [];
-                loadClients();
-            });
-    }
-=======
-    fetchClients();
->>>>>>> Stashed changes
 
+    // 🔁 Initialisation intelligente
+    if (getClients().length === 0) {
+        // Première fois → seed depuis API
+        fetchInitialClients();
+    } else {
+        // Déjà initialisé → lecture locale
+        fetchClients();
+    }
+
+    // Bootstrap modal
     const modalEl = document.getElementById("clientModal");
     if (modalEl && window.bootstrap) {
         clientModalInstance = new bootstrap.Modal(modalEl);
     }
 
+    // Form submit
     const form = document.getElementById("clientForm");
     if (form) {
         form.addEventListener("submit", onSubmitClientForm);
     }
 
+    // Page détails
     if (document.getElementById("detailNom")) {
         loadClientDetails();
     }
 });
 
 /* =========================
-   FETCH
+   FETCH LOCAL
 ========================= */
-async function fetchClients() {
-    try {
-        const res = await fetch("clients.json");
-        if (!res.ok) throw new Error("Erreur chargement clients");
+function fetchClients() {
+    clients = getClients();
+    loadClients();
+}
 
-        clients = await res.json();
-        loadClients();
-    } catch (e) {
-        console.error("Erreur fetch clients :", e);
-    }
+/* =========================
+   FETCH INITIAL (API)
+========================= */
+function fetchInitialClients() {
+    return fetch("https://dummyjson.com/users")
+        .then(res => res.json())
+        .then(data => {
+            const seed = data.users.map((user, index) => ({
+                id: Date.now() + user.id,
+                nom: user.company?.name || user.firstName + " " + user.lastName,
+                email: user.email,
+                telephone: user.phone,
+                ville: user.address?.city || "—"
+            }));
+
+            saveClients(seed);
+            clients = seed;
+            loadClients();
+        })
+        .catch(err => {
+            console.error("Erreur fetchInitialClients :", err);
+        });
 }
 
 /* =========================
@@ -71,16 +92,11 @@ function loadClients() {
 
     tbody.innerHTML = "";
 
-<<<<<<< Updated upstream
-    if (!clients || clients.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="text-center">Aucun client</td></tr>`;
-=======
     if (clients.length === 0) {
         tbody.innerHTML = `
             <tr>
                 <td colspan="6" class="text-center">Aucun client</td>
             </tr>`;
->>>>>>> Stashed changes
         return;
     }
 
@@ -94,7 +110,7 @@ function loadClients() {
                 <td>${escapeHtml(c.ville)}</td>
                 <td class="d-flex gap-2">
                     <a class="btn btn-sm btn-info"
-                       href="client-details.html?id=${c.id}">Voir</a>
+                       href="clients-details.html?id=${c.id}">Voir</a>
                     <button class="btn btn-sm btn-warning"
                             onclick="editClient(${c.id})">Modifier</button>
                     <button class="btn btn-sm btn-danger"
@@ -102,7 +118,7 @@ function loadClients() {
                 </td>
             </tr>`;
     });
-} 
+}
 
 /* =========================
    MODAL AJOUT
@@ -126,27 +142,16 @@ function onSubmitClientForm(e) {
     const telephone = document.getElementById("telephone").value.trim();
     const ville = document.getElementById("ville").value.trim();
 
-<<<<<<< Updated upstream
-    if (!clients) clients = [];
-=======
     if (!nom || !email) return;
->>>>>>> Stashed changes
 
     if (id) {
         // MODIFIER
         clients = clients.map(c =>
-<<<<<<< Updated upstream
-            String(c.id) === String(id) ? { ...c, nom, email, telephone, adresse } : c
-        );
-    } else {
-        clients.unshift({
-=======
             c.id == id ? { ...c, nom, email, telephone, ville } : c
         );
     } else {
         // AJOUTER
         clients.push({
->>>>>>> Stashed changes
             id: Date.now(),
             nom,
             email,
@@ -155,23 +160,15 @@ function onSubmitClientForm(e) {
         });
     }
 
-<<<<<<< Updated upstream
-    // Modifications en mémoire uniquement (volatiles)
-    clientModalInstance.hide();
-=======
+    saveClients(clients);
     clientModalInstance?.hide();
->>>>>>> Stashed changes
     loadClients();
-} 
+}
 
 /* =========================
    EDIT
 ========================= */
 function editClient(id) {
-<<<<<<< Updated upstream
-    if (!clients) clients = [];
-=======
->>>>>>> Stashed changes
     const c = clients.find(x => x.id === id);
     if (!c) return;
 
@@ -182,70 +179,34 @@ function editClient(id) {
     document.getElementById("telephone").value = c.telephone;
     document.getElementById("ville").value = c.ville;
 
-<<<<<<< Updated upstream
-    clientModalInstance.show();
-} 
-=======
     clientModalInstance?.show();
 }
->>>>>>> Stashed changes
 
 /* =========================
    DELETE
 ========================= */
 function deleteClient(id) {
     if (!confirm("Supprimer ce client ?")) return;
-<<<<<<< Updated upstream
-    if (!clients) clients = [];
-=======
->>>>>>> Stashed changes
+
     clients = clients.filter(c => c.id !== id);
+    saveClients(clients);
     loadClients();
-} 
+}
 
 /* =========================
    DETAILS PAGE
 ========================= */
 function loadClientDetails() {
     const params = new URLSearchParams(window.location.search);
-<<<<<<< Updated upstream
-    const rawId = params.get("id");
-    if (!rawId) return;
-    const id = Number(rawId);
-    if (Number.isNaN(id)) return;
-
-    const show = (c) => {
-        if (!c) return;
-        document.getElementById("detailNom").innerText = c.nom;
-        document.getElementById("detailEmail").innerText = c.email;
-        document.getElementById("detailTelephone").innerText = c.telephone;
-        document.getElementById("detailAdresse").innerText = c.adresse;
-    };
-
-    if (clients && clients.length > 0) {
-        const c = clients.find(x => Number(x.id) === Number(id));
-        if (c) { show(c); return; }
-    }
-
-    fetch("clients.json")
-        .then(res => res.json())
-        .then(data => {
-            clients = data;
-            const c = clients.find(x => Number(x.id) === Number(id));
-            show(c);
-        })
-        .catch(err => console.error("Erreur chargement clients.json :", err));
-=======
     const id = Number(params.get("id"));
 
-    const c = clients.find(x => x.id === id);
+    const c = getClients().find(x => x.id === id);
     if (!c) return;
 
     document.getElementById("detailNom").innerText = c.nom;
     document.getElementById("detailEmail").innerText = c.email;
     document.getElementById("detailTelephone").innerText = c.telephone;
     document.getElementById("detailVille").innerText = c.ville;
->>>>>>> Stashed changes
 }
 
 /* =========================
