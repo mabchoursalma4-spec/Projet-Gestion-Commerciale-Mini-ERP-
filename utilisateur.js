@@ -1,16 +1,18 @@
-/*****************************************
- * CRUD UTILISATEUR - localStorage
- * + Bootstrap Modal
- *****************************************/
+/*********************************
+ * CRUD UTILISATEURS – FETCH JSON
+ * Mini-ERP (Projet scolaire)
+ *********************************/
 
-const STORAGE_KEY = "erp_utilisateurs";
-
-// Bootstrap modal instance (créée quand la page contient la modal)
+let utilisateurs = [];
 let utilisateurModalInstance = null;
 // Liste des utilisateurs chargée depuis `utilisateurs.json` (modifications en mémoire)
 let utilisateurs = []; 
 
+/* =========================
+   INIT
+========================= */
 document.addEventListener("DOMContentLoaded", () => {
+<<<<<<< Updated upstream
     // Si la page contient la table, charger depuis le fichier JSON
     const tbody = document.getElementById("utilisateurTableBody");
     if (tbody) {
@@ -26,37 +28,46 @@ document.addEventListener("DOMContentLoaded", () => {
                 loadUtilisateurs();
             });
     }
+=======
+    fetchUtilisateurs();
+>>>>>>> Stashed changes
 
-    // Si la page contient la modal, on prépare l'instance Bootstrap
     const modalEl = document.getElementById("utilisateurModal");
     if (modalEl && window.bootstrap) {
         utilisateurModalInstance = new bootstrap.Modal(modalEl);
     }
 
-    // Brancher le submit si le formulaire existe
     const form = document.getElementById("utilisateurForm");
     if (form) {
         form.addEventListener("submit", onSubmitUtilisateurForm);
     }
+
+    if (document.getElementById("detailNom")) {
+        loadUtilisateurDetails();
+    }
 });
 
-/* =======================
-   STORAGE
-======================= */
-function getUtilisateurs() {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+/* =========================
+   FETCH
+========================= */
+async function fetchUtilisateurs() {
+    try {
+        const res = await fetch("utilisateurs.json");
+        if (!res.ok) throw new Error("Erreur chargement JSON");
+
+        utilisateurs = await res.json();
+        loadUtilisateurs();
+    } catch (e) {
+        console.error("Erreur fetch utilisateurs :", e);
+    }
 }
 
-function saveUtilisateurs(data) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
-
-/* =======================
+/* =========================
    LISTE
-======================= */
+========================= */
 function loadUtilisateurs() {
     const tbody = document.getElementById("utilisateurTableBody");
-    if (!tbody) return; // si on est sur details.html, pas de table
+    if (!tbody) return;
 
     tbody.innerHTML = "";
 
@@ -64,13 +75,12 @@ function loadUtilisateurs() {
         tbody.innerHTML = `
             <tr>
                 <td colspan="5" class="text-center">Aucun utilisateur</td>
-            </tr>
-        `;
+            </tr>`;
         return;
     }
 
     utilisateurs.forEach((u, index) => {
-        const roleLabel = (u.role === "admin") ? "Admin" : "Utilisateur";
+        const roleLabel = u.role === "admin" ? "Admin" : "Utilisateur";
 
         tbody.innerHTML += `
             <tr>
@@ -79,50 +89,49 @@ function loadUtilisateurs() {
                 <td>${escapeHtml(u.email)}</td>
                 <td>${roleLabel}</td>
                 <td class="d-flex gap-2">
-                    <a class="btn btn-sm btn-info" href="utilisateur-details.html?id=${u.id}">Voir</a>
-                    <button class="btn btn-sm btn-warning" type="button" onclick="editUtilisateur(${u.id})">Modifier</button>
-                    <button class="btn btn-sm btn-danger" type="button" onclick="deleteUtilisateur(${u.id})">Supprimer</button>
+                    <a class="btn btn-sm btn-info"
+                       href="utilisateur-details.html?id=${u.id}">Voir</a>
+                    <button class="btn btn-sm btn-warning"
+                            onclick="editUtilisateur(${u.id})">Modifier</button>
+                    <button class="btn btn-sm btn-danger"
+                            onclick="deleteUtilisateur(${u.id})">Supprimer</button>
                 </td>
-            </tr>
-        `;
+            </tr>`;
     });
 } 
 
-/* =======================
-   MODAL - OUVRIR AJOUT
-======================= */
+/* =========================
+   MODAL AJOUT
+========================= */
 function openAddUtilisateur() {
-    // reset form
-    const form = document.getElementById("utilisateurForm");
-    if (!form) return;
-
-    form.reset();
+    document.getElementById("utilisateurForm").reset();
     document.getElementById("utilisateurId").value = "";
     document.getElementById("modalTitle").innerText = "Ajouter utilisateur";
-
-    // ouvrir modal bootstrap
-    if (utilisateurModalInstance) utilisateurModalInstance.show();
+    utilisateurModalInstance?.show();
 }
 
-/* =======================
-   SUBMIT FORM (AJOUT/MODIF)
-======================= */
+/* =========================
+   SUBMIT (AJOUT / MODIF)
+========================= */
 function onSubmitUtilisateurForm(e) {
     e.preventDefault();
 
     const id = document.getElementById("utilisateurId").value;
     const nom = document.getElementById("nom").value.trim();
     const email = document.getElementById("email").value.trim();
-    const role = document.getElementById("role").value; // admin / utilisateur
+    const role = document.getElementById("role").value;
 
     if (!nom || !email) return;
 
+<<<<<<< Updated upstream
     if (!utilisateurs) utilisateurs = [];
 
+=======
+>>>>>>> Stashed changes
     if (id) {
         // MODIFIER en mémoire
         utilisateurs = utilisateurs.map(u =>
-            String(u.id) === String(id) ? { ...u, nom, email, role } : u
+            u.id == id ? { ...u, nom, email, role } : u
         );
     } else {
         // AJOUTER en mémoire
@@ -134,18 +143,25 @@ function onSubmitUtilisateurForm(e) {
         });
     }
 
+<<<<<<< Updated upstream
     // fermer modal bootstrap
     if (utilisateurModalInstance) utilisateurModalInstance.hide();
 
     // refresh table
+=======
+    utilisateurModalInstance?.hide();
+>>>>>>> Stashed changes
     loadUtilisateurs();
 } 
 
-/* =======================
+/* =========================
    EDIT
-======================= */
+========================= */
 function editUtilisateur(id) {
+<<<<<<< Updated upstream
     if (!utilisateurs) utilisateurs = [];
+=======
+>>>>>>> Stashed changes
     const u = utilisateurs.find(x => x.id === id);
     if (!u) return;
 
@@ -155,25 +171,34 @@ function editUtilisateur(id) {
     document.getElementById("email").value = u.email;
     document.getElementById("role").value = u.role;
 
+<<<<<<< Updated upstream
     if (utilisateurModalInstance) utilisateurModalInstance.show();
 } 
+=======
+    utilisateurModalInstance?.show();
+}
+>>>>>>> Stashed changes
 
-/* =======================
+/* =========================
    DELETE
-======================= */
+========================= */
 function deleteUtilisateur(id) {
     if (!confirm("Supprimer cet utilisateur ?")) return;
+<<<<<<< Updated upstream
 
     if (!utilisateurs) utilisateurs = [];
+=======
+>>>>>>> Stashed changes
     utilisateurs = utilisateurs.filter(u => u.id !== id);
     loadUtilisateurs();
 } 
 
-/* =======================
+/* =========================
    DETAILS PAGE
-======================= */
+========================= */
 function loadUtilisateurDetails() {
     const params = new URLSearchParams(window.location.search);
+<<<<<<< Updated upstream
     const rawId = params.get("id");
     if (!rawId) return;
 
@@ -208,11 +233,22 @@ function loadUtilisateurDetails() {
             show(u);
         })
         .catch(err => console.error("Erreur chargement utilisateurs.json :", err));
+=======
+    const id = Number(params.get("id"));
+
+    const u = utilisateurs.find(x => x.id === id);
+    if (!u) return;
+
+    document.getElementById("detailNom").innerText = u.nom;
+    document.getElementById("detailEmail").innerText = u.email;
+    document.getElementById("detailRole").innerText =
+        u.role === "admin" ? "Admin" : "Utilisateur";
+>>>>>>> Stashed changes
 }
 
-/* =======================
-   UTILS (sécurité affichage)
-======================= */
+/* =========================
+   UTILS
+========================= */
 function escapeHtml(str) {
     return String(str)
         .replaceAll("&", "&amp;")
@@ -221,3 +257,4 @@ function escapeHtml(str) {
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
 }
+
