@@ -1,39 +1,17 @@
 /*********************************
- * CRUD CLIENTS – FETCH + localStorage
- * Mini-ERP (Projet scolaire)
+ * CRUD CLIENTS
+ * Pattern IDENTIQUE à commandes.js
  *********************************/
 
 let clients = [];
 let clientModalInstance = null;
-
-const STORAGE_KEY_CLIENTS = "erp_clients";
-
-/* =========================
-   STORAGE
-========================= */
-function saveClients(data) {
-    localStorage.setItem(STORAGE_KEY_CLIENTS, JSON.stringify(data));
-}
-
-function getClients() {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY_CLIENTS)) || [];
-}
 
 /* =========================
    INIT
 ========================= */
 document.addEventListener("DOMContentLoaded", () => {
 
-    // 🔁 Initialisation intelligente
-    if (getClients().length === 0) {
-        // Première fois → seed depuis API
-        fetchInitialClients();
-    } else {
-        // Déjà initialisé → lecture locale
-        fetchClients();
-    }
-
-    // Bootstrap modal
+    // Modal Bootstrap
     const modalEl = document.getElementById("clientModal");
     if (modalEl && window.bootstrap) {
         clientModalInstance = new bootstrap.Modal(modalEl);
@@ -45,6 +23,9 @@ document.addEventListener("DOMContentLoaded", () => {
         form.addEventListener("submit", onSubmitClientForm);
     }
 
+    // ✅ EXACTEMENT comme commandes.js / utilisateur.js
+    loadClients();
+
     // Page détails
     if (document.getElementById("detailNom")) {
         loadClientDetails();
@@ -52,47 +33,35 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* =========================
-   FETCH LOCAL
-========================= */
-function fetchClients() {
-    clients = getClients();
-    loadClients();
-}
-
-/* =========================
-   FETCH INITIAL (API)
-========================= */
-function fetchInitialClients() {
-    return fetch("https://dummyjson.com/users")
-        .then(res => res.json())
-        .then(data => {
-            const seed = data.users.map((user, index) => ({
-                id: Date.now() + user.id,
-                nom: user.company?.name || user.firstName + " " + user.lastName,
-                email: user.email,
-                telephone: user.phone,
-                ville: user.address?.city || "—"
-            }));
-
-            saveClients(seed);
-            clients = seed;
-            loadClients();
-        })
-        .catch(err => {
-            console.error("Erreur fetchInitialClients :", err);
-        });
-}
-
-/* =========================
-   LISTE
+   LOAD (comme loadCommandes)
 ========================= */
 function loadClients() {
     const tbody = document.getElementById("clientTableBody");
     if (!tbody) return;
 
+    fetch("clients.json")
+        .then(res => res.json())
+        .then(data => {
+            clients = data;
+            renderClients();
+        })
+        .catch(err => {
+            console.error("Erreur chargement clients.json :", err);
+            clients = [];
+            renderClients();
+        });
+}
+
+/* =========================
+   RENDER
+========================= */
+function renderClients() {
+    const tbody = document.getElementById("clientTableBody");
+    if (!tbody) return;
+
     tbody.innerHTML = "";
 
-    if (clients.length === 0) {
+    if (!clients || clients.length === 0) {
         tbody.innerHTML = `
             <tr>
                 <td colspan="6" class="text-center">Aucun client</td>
@@ -121,17 +90,7 @@ function loadClients() {
 }
 
 /* =========================
-   MODAL AJOUT
-========================= */
-function openAddClient() {
-    document.getElementById("clientForm").reset();
-    document.getElementById("clientId").value = "";
-    document.getElementById("modalTitle").innerText = "Ajouter client";
-    clientModalInstance?.show();
-}
-
-/* =========================
-   SUBMIT (AJOUT / MODIF)
+   CRUD EN MÉMOIRE
 ========================= */
 function onSubmitClientForm(e) {
     e.preventDefault();
@@ -145,13 +104,13 @@ function onSubmitClientForm(e) {
     if (!nom || !email) return;
 
     if (id) {
-        // MODIFIER
         clients = clients.map(c =>
-            c.id == id ? { ...c, nom, email, telephone, ville } : c
+            String(c.id) === String(id)
+                ? { ...c, nom, email, telephone, ville }
+                : c
         );
     } else {
-        // AJOUTER
-        clients.push({
+        clients.unshift({
             id: Date.now(),
             nom,
             email,
@@ -160,19 +119,14 @@ function onSubmitClientForm(e) {
         });
     }
 
-    saveClients(clients);
     clientModalInstance?.hide();
-    loadClients();
+    renderClients();
 }
 
-/* =========================
-   EDIT
-========================= */
 function editClient(id) {
     const c = clients.find(x => x.id === id);
     if (!c) return;
 
-    document.getElementById("modalTitle").innerText = "Modifier client";
     document.getElementById("clientId").value = c.id;
     document.getElementById("nom").value = c.nom;
     document.getElementById("email").value = c.email;
@@ -182,31 +136,30 @@ function editClient(id) {
     clientModalInstance?.show();
 }
 
-/* =========================
-   DELETE
-========================= */
 function deleteClient(id) {
     if (!confirm("Supprimer ce client ?")) return;
-
     clients = clients.filter(c => c.id !== id);
-    saveClients(clients);
-    loadClients();
+    renderClients();
 }
 
 /* =========================
-   DETAILS PAGE
+   DETAILS
 ========================= */
 function loadClientDetails() {
-    const params = new URLSearchParams(window.location.search);
-    const id = Number(params.get("id"));
+    const id = Number(new URLSearchParams(window.location.search).get("id"));
+    if (!id) return;
 
-    const c = getClients().find(x => x.id === id);
-    if (!c) return;
+    fetch("clients.json")
+        .then(res => res.json())
+        .then(data => {
+            const c = data.find(x => Number(x.id) === id);
+            if (!c) return;
 
-    document.getElementById("detailNom").innerText = c.nom;
-    document.getElementById("detailEmail").innerText = c.email;
-    document.getElementById("detailTelephone").innerText = c.telephone;
-    document.getElementById("detailVille").innerText = c.ville;
+            document.getElementById("detailNom").innerText = c.nom;
+            document.getElementById("detailEmail").innerText = c.email;
+            document.getElementById("detailTelephone").innerText = c.telephone;
+            document.getElementById("detailVille").innerText = c.ville;
+        });
 }
 
 /* =========================
@@ -220,3 +173,4 @@ function escapeHtml(str) {
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
 }
+
