@@ -37,8 +37,13 @@ function logout() {
 }
 
 /* ===== Initialisation depuis JSON ===== */
-async function initializeAccounts() {
-    if (getAccounts().length > 0) return;
+async function initializeAccounts(force = false) {
+    const existing = getAccounts();
+
+    if (!force && existing.length > 0) {
+        console.info("Utilisateurs déjà initialisés");
+        return;
+    }
 
     try {
         const resp = await fetch("utilisateurs.json", { cache: "no-store" });
@@ -48,16 +53,22 @@ async function initializeAccounts() {
             id: u.id,
             name: `${u.prenom} ${u.nom}`,
             email: u.email.toLowerCase(),
-            password: hash(u.password), // hash ici UNE FOIS
+            password: hash(u.password),
             role: u.role || "utilisateur"
         }));
 
-        saveAccounts(users);
-        console.info("Utilisateurs importés depuis JSON");
+        // 🔥 ÉCRASE au lieu d’ajouter
+        localStorage.setItem("erp_users", JSON.stringify(users));
+
+        console.info("Utilisateurs importés proprement depuis JSON");
     } catch (e) {
+        console.error(e);
         alert("Impossible de charger utilisateurs.json");
     }
 }
+
+
+
 
 /* ===== LOGIN ===== */
 function handleLogin() {
