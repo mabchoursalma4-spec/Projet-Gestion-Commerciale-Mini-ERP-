@@ -71,7 +71,7 @@
 
         <div class="mt-auto p-3 border-top">
             <small><i class="fas fa-user me-1"></i> Admin</small><br>
-            <a href="#" class="text-white text-decoration-underline">
+            <a href="#" class="text-white text-decoration-underline" id="logoutBtn">
                 <i class="fas fa-sign-out-alt me-1"></i> Déconnexion
             </a>
         </div>
@@ -152,5 +152,17 @@
     
     <!-- DASHBOARD JS -->
     <script src="dashboard.js"></script>
+    <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById("logoutBtn");
+    if (btn) {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        logout();
+      });
+    }
+  });
+</script>
+
 </body>
 </html>

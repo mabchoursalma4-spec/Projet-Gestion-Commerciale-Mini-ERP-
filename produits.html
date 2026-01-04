@@ -15,8 +15,11 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-
+    
+<script src="auth.js"></script>
+<script>
+    requireAuth();
+</script>
 
     <!-- SIDEBAR -->
     <aside class="sidebar  text-white">
@@ -57,7 +60,7 @@
 
         <div class="mt-auto p-3 border-top">
             <small>👤 Admin</small><br>
-            <a href="#" class="text-white text-decoration-underline">Déconnexion</a>
+            <a href="#" class="text-white text-decoration-underline" id="logoutBtn">Déconnexion</a>
         </div>
     </aside>
 
@@ -134,5 +137,17 @@
 
 <!-- JS -->
 <script src="produits.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById("logoutBtn");
+    if (btn) {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        logout();
+      });
+    }
+  });
+</script>
+
 </body>
 </html>

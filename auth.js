@@ -128,10 +128,29 @@ function handleRegister() {
 
 /* ===== PROTECTION ===== */
 function requireAuth() {
-    if (!getCurrentUser()) {
-        window.location.href = "login.html";
+    const raw = localStorage.getItem("erp_logged_user");
+
+    //  aucune session → login
+    if (!raw) {
+        window.location.replace("login.html");
+        return;
+    }
+
+    try {
+        const user = JSON.parse(raw);
+
+        //  session invalide → login
+        if (!user || !user.email) {
+            localStorage.removeItem("erp_logged_user");
+            window.location.replace("login.html");
+        }
+    } catch (e) {
+        //  JSON corrompu → login
+        localStorage.removeItem("erp_logged_user");
+        window.location.replace("login.html");
     }
 }
+
 
 /* ===== Exports ===== */
 window.handleLogin = handleLogin;
