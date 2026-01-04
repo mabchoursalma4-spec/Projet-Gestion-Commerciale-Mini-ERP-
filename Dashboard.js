@@ -2,6 +2,8 @@
 let produitsChart = null;
 let commandesChart = null;
 let facturesChart = null;
+let utilisateursChart = null;
+let clientsChart = null;
 
 // Fonction pour charger les données JSON
 async function loadData(url) {
@@ -51,14 +53,16 @@ async function loadAllCharts() {
         `;
 
         // Charger toutes les données
-        const [produits, commandes, factures] = await Promise.all([
+        const [produits, commandes, factures, utilisateurs, clients] = await Promise.all([
             loadData('produits.json'),
             loadData('commandes.json'),
-            loadData('factures.json')
+            loadData('factures.json'),
+            loadData('utilisateurs.json'),
+            loadData('clients.json')
         ]);
 
         // Mettre à jour les statistiques
-        updateStats(produits, commandes, factures);
+        updateStats(produits, commandes, factures, utilisateurs, clients);
         
         // Détruire les anciens graphiques s'ils existent
         destroyCharts();
@@ -67,6 +71,8 @@ async function loadAllCharts() {
         createProduitsChart(produits);
         createCommandesChart(commandes);
         createFacturesChart(factures);
+        createUtilisateursChart(utilisateurs);
+        createClientsChart(clients);
 
     } catch (error) {
         console.error('Erreur lors du chargement:', error);
@@ -79,6 +85,8 @@ function destroyCharts() {
     if (produitsChart) produitsChart.destroy();
     if (commandesChart) commandesChart.destroy();
     if (facturesChart) facturesChart.destroy();
+    if (utilisateursChart) utilisateursChart.destroy();
+    if (clientsChart) clientsChart.destroy();
 }
 
 // Rafraîchir les graphiques
@@ -124,13 +132,15 @@ function showNotification(message, type = 'info') {
 }
 
 // Mettre à jour les statistiques
-function updateStats(produits, commandes, factures) {
+function updateStats(produits, commandes, factures, utilisateurs, clients) {
     const statsCards = document.getElementById('statsCards');
     
     // Calculer les statistiques
     const totalProducts = produits.length;
     const totalOrders = commandes.length;
     const totalInvoices = factures.length;
+    const totalUsers = utilisateurs.length;
+    const totalClients = clients.length;
     
     // Calculer le revenu total (factures payées)
     const totalRevenue = factures
@@ -155,31 +165,188 @@ function updateStats(produits, commandes, factures) {
     });
     const topCategory = Object.keys(categories).reduce((a, b) => categories[a] > categories[b] ? a : b);
 
+    // Utilisateurs par rôle
+    const roles = {};
+    utilisateurs.forEach(u => {
+        roles[u.role] = (roles[u.role] || 0) + 1;
+    });
+
     statsCards.innerHTML = `
         <div class="stat-card">
+            <h5>Total Utilisateurs</h5>
+            <div class="stat-value" style="color: #3498db;">${totalUsers}</div>
+            <div class="stat-detail">${roles['Admin'] || 0} admins</div>
+        </div>
+        <div class="stat-card">
+            <h5>Total Clients</h5>
+            <div class="stat-value" style="color: #2ecc71;">${totalClients}</div>
+            <div class="stat-detail">Top ville</div>
+        </div>
+        <div class="stat-card">
             <h5>Total Produits</h5>
-            <div class="stat-value" style="color: #3498db;">${totalProducts}</div>
+            <div class="stat-value" style="color: #e74c3c;">${totalProducts}</div>
             <div class="stat-detail">${Object.keys(categories).length} catégories</div>
         </div>
         <div class="stat-card">
             <h5>Total Commandes</h5>
-            <div class="stat-value" style="color: #2ecc71;">${totalOrders}</div>
+            <div class="stat-value" style="color: #f39c12;">${totalOrders}</div>
             <div class="stat-detail">${pendingOrders} en attente</div>
         </div>
         <div class="stat-card">
             <h5>Total Factures</h5>
-            <div class="stat-value" style="color: #e74c3c;">${totalInvoices}</div>
+            <div class="stat-value" style="color: #9b59b6;">${totalInvoices}</div>
             <div class="stat-detail">${factures.filter(f => f.statut === 'En attente').length} en attente</div>
         </div>
         <div class="stat-card">
             <h5>Revenu Total</h5>
-            <div class="stat-value" style="color: #f39c12;">${totalRevenue.toFixed(2)} DH</div>
+            <div class="stat-value" style="color: #1abc9c;">${totalRevenue.toFixed(2)} DH</div>
             <div class="stat-detail">${pendingRevenue.toFixed(2)} DH en attente</div>
         </div>
     `;
 }
 
-// 1. Graphique Produits par Catégorie
+// 1. Graphique Utilisateurs par Rôle
+function createUtilisateursChart(data) {
+    const ctx = document.getElementById('utilisateursChart').getContext('2d');
+    
+    // Grouper par rôle
+    const roles = {};
+    data.forEach(utilisateur => {
+        const role = utilisateur.role || 'Utilisateur';
+        roles[role] = (roles[role] || 0) + 1;
+    });
+    
+    const roleLabels = Object.keys(roles);
+    const roleCounts = Object.values(roles);
+    
+    // Mettre à jour le footer
+    document.getElementById('totalUtilisateurs').textContent = data.length;
+    
+    // Couleurs pour les rôles
+    const backgroundColors = roleLabels.map(role => {
+        switch(role.toLowerCase()) {
+            case 'admin': return 'rgba(52, 152, 219, 0.8)';
+            case 'utilisateur': return 'rgba(46, 204, 113, 0.8)';
+            case 'manager': return 'rgba(155, 89, 182, 0.8)';
+            case 'superviseur': return 'rgba(241, 196, 15, 0.8)';
+            default: return 'rgba(149, 165, 166, 0.8)';
+        }
+    });
+    
+    utilisateursChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: roleLabels,
+            datasets: [{
+                data: roleCounts,
+                backgroundColor: backgroundColors,
+                borderWidth: 2,
+                borderColor: '#fff',
+                hoverOffset: 15
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { 
+                    position: 'right',
+                    labels: {
+                        padding: 20,
+                        usePointStyle: true,
+                        font: {
+                            size: 12
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = ((context.raw / total) * 100).toFixed(1);
+                            return `${context.label}: ${context.raw} utilisateurs (${percentage}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// 2. Graphique Clients par Ville
+function createClientsChart(data) {
+    const ctx = document.getElementById('clientsChart').getContext('2d');
+    
+    // Grouper par ville (prendre les 5 villes les plus fréquentes)
+    const villes = {};
+    data.forEach(client => {
+        const ville = client.ville || 'Non spécifiée';
+        villes[ville] = (villes[ville] || 0) + 1;
+    });
+    
+    // Trier par nombre de clients et prendre le top 5
+    const sortedVilles = Object.entries(villes)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5);
+    
+    const villeLabels = sortedVilles.map(v => v[0]);
+    const villeCounts = sortedVilles.map(v => v[1]);
+    
+    // Mettre à jour le footer
+    document.getElementById('totalClients').textContent = data.length;
+    
+    clientsChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: villeLabels,
+            datasets: [{
+                label: 'Nombre de clients',
+                data: villeCounts,
+                backgroundColor: 'rgba(255, 159, 64, 0.7)',
+                borderColor: 'rgb(255, 159, 64)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    },
+                    title: {
+                        display: true,
+                        text: 'Nombre de clients'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Ville'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const total = data.length;
+                            const percentage = ((context.raw / total) * 100).toFixed(1);
+                            return `${context.label}: ${context.raw} clients (${percentage}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// 3. Graphique Produits par Catégorie (gardé comme avant)
 function createProduitsChart(data) {
     const ctx = document.getElementById('produitsChart').getContext('2d');
     
@@ -237,7 +404,7 @@ function createProduitsChart(data) {
     });
 }
 
-// 2. Graphique Commandes par Statut
+// 4. Graphique Commandes par Statut (gardé comme avant)
 function createCommandesChart(data) {
     const ctx = document.getElementById('commandesChart').getContext('2d');
     
@@ -306,7 +473,7 @@ function createCommandesChart(data) {
     });
 }
 
-// 3. Graphique Factures par Statut
+// 5. Graphique Factures par Statut (gardé comme avant)
 function createFacturesChart(data) {
     const ctx = document.getElementById('facturesChart').getContext('2d');
     
@@ -325,7 +492,7 @@ function createFacturesChart(data) {
     
     const statutLabels = Object.keys(statuts);
     const statutCounts = statutLabels.map(statut => statuts[statut].count);
-    const statutMontants = statutLabels.map(statut => statuts[statut].montant);
+    const statutMontants = statutLabels.map(statut => statuts[stature].montant);
     
     // Calculer le revenu total
     const revenuTotal = statutMontants.reduce((a, b) => a + b, 0);
