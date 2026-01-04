@@ -1,6 +1,5 @@
 /*********************************
  * CRUD CLIENTS
- * Pattern IDENTIQUE à commandes.js
  *********************************/
 
 let clients = [];
@@ -23,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
         form.addEventListener("submit", onSubmitClientForm);
     }
 
-    // ✅ EXACTEMENT comme commandes.js / utilisateur.js
+    //  EXACTEMENT
     loadClients();
 
     // Page détails
@@ -33,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* =========================
-   LOAD (comme loadCommandes)
+   LOAD
 ========================= */
 function loadClients() {
     const tbody = document.getElementById("clientTableBody");
