@@ -10,10 +10,17 @@
 
     <!-- Style Odoo -->
     <link rel="stylesheet" href="style.css">
+
+    <!-- 🔐 Redirection silencieuse si déjà connecté -->
+    <script src="auth.js"></script>
+    <script>
+        if (localStorage.getItem("erp_logged_user")) {
+            window.location.replace("Dashboard.html");
+        }
+    </script>
 </head>
 
 <body class="login-body">
-    
 
 <div class="login-container">
     <div class="login-card">
@@ -62,7 +69,5 @@
 
     </div>
 </div>
-
-<script src="auth.js"></script>
 </body>
 </html>
