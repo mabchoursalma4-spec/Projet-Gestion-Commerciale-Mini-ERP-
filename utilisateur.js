@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
         form.addEventListener("submit", onSubmitUtilisateurForm);
     }
 
-    // Charger la liste (comme loadCommandes)
+    // ✅ APPEL (comme commandes.js)
     loadUtilisateurs();
 
     // Page détails
@@ -43,6 +43,23 @@ document.addEventListener("DOMContentLoaded", () => {
         loadUtilisateurDetails();
     }
 });
+function loadUtilisateurs() {
+    const tbody = document.getElementById("utilisateurTableBody");
+    if (!tbody) return; // si on est sur details.html, pas de table
+
+    // Charger directement depuis le fichier JSON local
+    fetch("utilisateurs.json")
+        .then(res => res.json())
+        .then(data => {
+            utilisateurs = data;
+            renderUtilisateurs();
+        })
+        .catch(err => {
+            console.error("Erreur chargement utilisateurs.json :", err);
+            utilisateurs = [];
+            renderUtilisateurs();
+        });
+}
 
 /* =========================
    INIT FROM API (OPTIONNEL)
