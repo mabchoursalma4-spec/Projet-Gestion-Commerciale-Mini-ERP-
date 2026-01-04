@@ -1,65 +1,85 @@
 /*********************************
- * CRUD UTILISATEURS – FETCH JSON
+ * CRUD UTILISATEURS – FETCH + localStorage
  * Mini-ERP (Projet scolaire)
  *********************************/
 
 let utilisateurs = [];
 let utilisateurModalInstance = null;
-// Liste des utilisateurs chargée depuis `utilisateurs.json` (modifications en mémoire)
-let utilisateurs = []; 
+
+const STORAGE_KEY = "erp_utilisateurs";
+
+/* =========================
+   STORAGE
+========================= */
+function saveUtilisateurs(data) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function getUtilisateurs() {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+}
 
 /* =========================
    INIT
 ========================= */
 document.addEventListener("DOMContentLoaded", () => {
-<<<<<<< Updated upstream
-    // Si la page contient la table, charger depuis le fichier JSON
-    const tbody = document.getElementById("utilisateurTableBody");
-    if (tbody) {
-        fetch("utilisateurs.json")
-            .then(res => res.json())
-            .then(data => {
-                utilisateurs = data;
-                loadUtilisateurs();
-            })
-            .catch(err => {
-                console.error("Erreur chargement utilisateurs.json :", err);
-                utilisateurs = [];
-                loadUtilisateurs();
-            });
-    }
-=======
-    fetchUtilisateurs();
->>>>>>> Stashed changes
 
+    // 🔁 Initialisation intelligente
+    if (getUtilisateurs().length === 0) {
+        // Première fois → seed depuis API
+        fetchInitialUtilisateurs();
+    } else {
+        // Déjà initialisé → lecture locale
+        fetchUtilisateurs();
+    }
+
+    // Bootstrap modal
     const modalEl = document.getElementById("utilisateurModal");
     if (modalEl && window.bootstrap) {
         utilisateurModalInstance = new bootstrap.Modal(modalEl);
     }
 
+    // Form submit
     const form = document.getElementById("utilisateurForm");
     if (form) {
         form.addEventListener("submit", onSubmitUtilisateurForm);
     }
 
+    // Page détails
     if (document.getElementById("detailNom")) {
         loadUtilisateurDetails();
     }
 });
 
 /* =========================
-   FETCH
+   FETCH LOCAL
 ========================= */
-async function fetchUtilisateurs() {
-    try {
-        const res = await fetch("utilisateurs.json");
-        if (!res.ok) throw new Error("Erreur chargement JSON");
+function fetchUtilisateurs() {
+    utilisateurs = getUtilisateurs();
+    loadUtilisateurs();
+}
 
-        utilisateurs = await res.json();
-        loadUtilisateurs();
-    } catch (e) {
-        console.error("Erreur fetch utilisateurs :", e);
-    }
+/* =========================
+   FETCH INITIAL (API)
+========================= */
+function fetchInitialUtilisateurs() {
+    return fetch("https://dummyjson.com/users")
+        .then(res => res.json())
+        .then(data => {
+            const seed = data.users.map(user => ({
+                id: Date.now() + user.id,
+                nom: user.firstName + " " + user.lastName,
+                email: user.email,
+                role: "utilisateur"
+            }));
+
+            saveUtilisateurs(seed);
+            utilisateurs = seed;
+            loadUtilisateurs();
+        })
+        .catch(err => {
+            console.error("Erreur fetchInitialUtilisateurs :", err);
+        });
 }
 
 /* =========================
@@ -71,7 +91,7 @@ function loadUtilisateurs() {
 
     tbody.innerHTML = "";
 
-    if (!utilisateurs || utilisateurs.length === 0) {
+    if (utilisateurs.length === 0) {
         tbody.innerHTML = `
             <tr>
                 <td colspan="5" class="text-center">Aucun utilisateur</td>
@@ -98,7 +118,7 @@ function loadUtilisateurs() {
                 </td>
             </tr>`;
     });
-} 
+}
 
 /* =========================
    MODAL AJOUT
@@ -123,18 +143,13 @@ function onSubmitUtilisateurForm(e) {
 
     if (!nom || !email) return;
 
-<<<<<<< Updated upstream
-    if (!utilisateurs) utilisateurs = [];
-
-=======
->>>>>>> Stashed changes
     if (id) {
-        // MODIFIER en mémoire
+        // MODIFIER
         utilisateurs = utilisateurs.map(u =>
             u.id == id ? { ...u, nom, email, role } : u
         );
     } else {
-        // AJOUTER en mémoire
+        // AJOUTER
         utilisateurs.push({
             id: Date.now(),
             nom,
@@ -143,25 +158,15 @@ function onSubmitUtilisateurForm(e) {
         });
     }
 
-<<<<<<< Updated upstream
-    // fermer modal bootstrap
-    if (utilisateurModalInstance) utilisateurModalInstance.hide();
-
-    // refresh table
-=======
+    saveUtilisateurs(utilisateurs);
     utilisateurModalInstance?.hide();
->>>>>>> Stashed changes
     loadUtilisateurs();
-} 
+}
 
 /* =========================
    EDIT
 ========================= */
 function editUtilisateur(id) {
-<<<<<<< Updated upstream
-    if (!utilisateurs) utilisateurs = [];
-=======
->>>>>>> Stashed changes
     const u = utilisateurs.find(x => x.id === id);
     if (!u) return;
 
@@ -171,79 +176,34 @@ function editUtilisateur(id) {
     document.getElementById("email").value = u.email;
     document.getElementById("role").value = u.role;
 
-<<<<<<< Updated upstream
-    if (utilisateurModalInstance) utilisateurModalInstance.show();
-} 
-=======
     utilisateurModalInstance?.show();
 }
->>>>>>> Stashed changes
 
 /* =========================
    DELETE
 ========================= */
 function deleteUtilisateur(id) {
     if (!confirm("Supprimer cet utilisateur ?")) return;
-<<<<<<< Updated upstream
 
-    if (!utilisateurs) utilisateurs = [];
-=======
->>>>>>> Stashed changes
     utilisateurs = utilisateurs.filter(u => u.id !== id);
+    saveUtilisateurs(utilisateurs);
     loadUtilisateurs();
-} 
+}
 
 /* =========================
    DETAILS PAGE
 ========================= */
 function loadUtilisateurDetails() {
     const params = new URLSearchParams(window.location.search);
-<<<<<<< Updated upstream
-    const rawId = params.get("id");
-    if (!rawId) return;
-
-    const id = Number(rawId);
-    if (Number.isNaN(id)) return;
-
-    const show = (u) => {
-        if (!u) return;
-        const roleLabel = (u.role === "admin") ? "Admin" : "Utilisateur";
-
-        const nomEl = document.getElementById("detailNom");
-        const emailEl = document.getElementById("detailEmail");
-        const roleEl = document.getElementById("detailRole");
-
-        if (nomEl) nomEl.innerText = u.nom;
-        if (emailEl) emailEl.innerText = u.email;
-        if (roleEl) roleEl.innerText = roleLabel;
-    };
-
-    // Chercher en mémoire
-    if (utilisateurs && utilisateurs.length > 0) {
-        const u = utilisateurs.find(x => Number(x.id) === Number(id));
-        if (u) { show(u); return; }
-    }
-
-    // fallback JSON
-    fetch("utilisateurs.json")
-        .then(res => res.json())
-        .then(data => {
-            utilisateurs = data;
-            const u = utilisateurs.find(x => Number(x.id) === Number(id));
-            show(u);
-        })
-        .catch(err => console.error("Erreur chargement utilisateurs.json :", err));
-=======
     const id = Number(params.get("id"));
 
-    const u = utilisateurs.find(x => x.id === id);
+    const u = getUtilisateurs().find(x => x.id === id);
     if (!u) return;
 
     document.getElementById("detailNom").innerText = u.nom;
     document.getElementById("detailEmail").innerText = u.email;
     document.getElementById("detailRole").innerText =
         u.role === "admin" ? "Admin" : "Utilisateur";
->>>>>>> Stashed changes
 }
 
 /* =========================
@@ -257,4 +217,3 @@ function escapeHtml(str) {
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
 }
-
