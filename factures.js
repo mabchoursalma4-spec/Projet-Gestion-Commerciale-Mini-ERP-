@@ -57,6 +57,7 @@ function renderFactures() {
                 <td>${f.montant} DH</td>
                 <td><span class="${statusClass}">${f.statut}</span></td>
                 <td>
+                    <a class="btn btn-sm btn-info" href="factures-details.html?id=${f.id}">Détails</a>
                     <button class="btn btn-sm btn-warning" onclick="editFacture(${f.id})">Modifier</button>
                     <button class="btn btn-sm btn-danger" onclick="deleteFacture(${f.id})">Supprimer</button>
                 </td>
