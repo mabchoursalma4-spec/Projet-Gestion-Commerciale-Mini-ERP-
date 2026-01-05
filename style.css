@@ -487,3 +487,10 @@ select:focus {
         font-size: 1.1rem;
     }
 }
+.login-logo {
+    max-width: 180px;   /* ajuste si tu veux */
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    border-radius: 50%;
+}
