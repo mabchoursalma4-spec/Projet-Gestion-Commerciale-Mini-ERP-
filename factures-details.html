@@ -1,74 +1,74 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Détails facture</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!DOCTYPE html>
+    <html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <title>Détails facture</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-</head>
-<body>
-<script src="auth.js"></script>
-<script>
-    requireAuth();
-</script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="style.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    </head>
+    <body>
+    <script src="auth.js"></script>
+    <script>
+        requireAuth();
+    </script>
 
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar  text-white">
-        <h4 class="text-center py-3 border-bottom">Mini-ERP</h4>
+        <!-- SIDEBAR -->
+        <aside class="sidebar  text-white">
+            <h4 class="text-center py-3 border-bottom">Mini-ERP</h4>
 
-        <ul class="nav nav-pills flex-column px-2">
-            <li class="nav-item">
-                <a class="nav-link text-white" href="factures.html">Factures</a>
-            </li>
-        </ul>
-    </aside>
+            <ul class="nav nav-pills flex-column px-2">
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="factures.html">Factures</a>
+                </li>
+            </ul>
+        </aside>
 
-    <!-- CONTENU -->
-    <main class="main-content">
-        <h2>Détails de la facture</h2>
+        <!-- CONTENU -->
+        <main class="main-content">
+            <h2>Détails de la facture</h2>
 
-        <div class="card mt-3">
-            <div class="card-body">
-                <p><strong>Commande :</strong> <span id="detailCommande"></span></p>
-                <p><strong>Date :</strong> <span id="detailDate"></span></p>
-                <p><strong>Montant TTC :</strong> <span id="detailMontant"></span></p>
-                <p><strong>Statut :</strong> <span id="detailStatut"></span></p>
+            <div class="card mt-3">
+                <div class="card-body">
+                    <p><strong>Commande :</strong> <span id="detailCommande"></span></p>
+                    <p><strong>Date :</strong> <span id="detailDate"></span></p>
+                    <p><strong>Montant TTC :</strong> <span id="detailMontant"></span></p>
+                    <p><strong>Statut :</strong> <span id="detailStatut"></span></p>
 
-                <button class="btn btn-success" onclick="exportFacturePDF()">📄 Export PDF</button>
-                <a href="factures.html" class="btn btn-secondary">← Retour</a>
+                    <button class="btn btn-success" onclick="exportFacturePDF()">📄 Export PDF</button>
+                    <a href="factures.html" class="btn btn-secondary">← Retour</a>
+                </div>
             </div>
-        </div>
-    </main>
+        </main>
 
 
-<script src="factures.js"></script>
-<script>
-    loadFactureDetails();
+    <script src="factures.js"></script>
+    <script>
+        loadFactureDetails();
 
-    function exportFacturePDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
+        function exportFacturePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
 
-        const commande = document.getElementById("detailCommande").innerText;
-        const date = document.getElementById("detailDate").innerText;
-        const montant = document.getElementById("detailMontant").innerText;
-        const statut = document.getElementById("detailStatut").innerText;
+            const commande = document.getElementById("detailCommande").innerText;
+            const date = document.getElementById("detailDate").innerText;
+            const montant = document.getElementById("detailMontant").innerText;
+            const statut = document.getElementById("detailStatut").innerText;
 
-        doc.setFontSize(14);
-        doc.text("Détails de la facture", 14, 20);
+            doc.setFontSize(14);
+            doc.text("Détails de la facture", 14, 20);
 
-        doc.setFontSize(12);
-        doc.text(`Commande: ${commande}`, 14, 40);
-        doc.text(`Date: ${date}`, 14, 50);
-        doc.text(`Montant TTC: ${montant}`, 14, 60);
-        doc.text(`Statut: ${statut}`, 14, 70);
+            doc.setFontSize(12);
+            doc.text(`Commande: ${commande}`, 14, 40);
+            doc.text(`Date: ${date}`, 14, 50);
+            doc.text(`Montant TTC: ${montant}`, 14, 60);
+            doc.text(`Statut: ${statut}`, 14, 70);
 
-        doc.save(`facture_${commande}.pdf`);
-    }
-</script>
-</body>
-</html>
+            doc.save(`facture_${commande}.pdf`);
+        }
+    </script>
+    </body>
+    </html>

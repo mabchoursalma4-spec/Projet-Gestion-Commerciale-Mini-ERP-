@@ -297,3 +297,66 @@ function searchFactures() {
 function exportPDF() {
     window.print();
 }
+
+function loadFactureDetails() {
+    const params = new URLSearchParams(window.location.search);
+    const rawId = params.get("id");
+
+    if (!rawId) {
+        showFactureNotFound();
+        return;
+    }
+
+    const id = Number(rawId);
+    if (Number.isNaN(id)) {
+        showFactureNotFound();
+        return;
+    }
+
+    const show = (f) => {
+        if (!f) {
+            showFactureNotFound();
+            return;
+        }
+
+        const detailCommande = document.getElementById("detailCommande");
+        const detailDate = document.getElementById("detailDate");
+        const detailMontant = document.getElementById("detailMontant");
+        const detailStatut = document.getElementById("detailStatut");
+
+        if (detailCommande) detailCommande.innerText = f.commande;
+        if (detailDate) detailDate.innerText = f.date;
+        if (detailMontant) detailMontant.innerText = Number(f.montant).toFixed(2) + " DH";
+        if (detailStatut) detailStatut.innerText = f.statut;
+    };
+
+    const findAndShow = () => {
+        if (!factures || factures.length === 0) return false;
+
+        const f = factures.find(x => Number(x.id) === Number(id));
+        if (f) {
+            show(f);
+            return true;
+        }
+        return false;
+    };
+
+    // Si la facture n'est pas déjà en mémoire
+    if (!findAndShow()) {
+        fetch("factures.json")
+            .then(res => {
+                if (!res.ok) throw new Error("HTTP " + res.status);
+                return res.json();
+            })
+            .then(data => {
+                factures = data;
+                const f = factures.find(x => Number(x.id) === Number(id));
+                show(f);
+            })
+            .catch(err => {
+                console.error("Erreur chargement factures.json :", err);
+                showFactureNotFound();
+            });
+    }
+}
+
