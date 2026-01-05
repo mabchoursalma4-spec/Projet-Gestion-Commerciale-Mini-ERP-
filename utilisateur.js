@@ -248,13 +248,18 @@ function deleteUtilisateur(id) {
    DETAILS PAGE
 ========================= */
 function loadUtilisateurDetails() {
-    const params = new URLSearchParams(window.location.search);
-    const id = Number(params.get("id"));
+    const id = Number(new URLSearchParams(window.location.search).get("id"));
+    if (!id) return;
 
-    const u = getUtilisateurs().find(x => Number(x.id) === id);
-    if (!u) return;
+    const u = JSON.parse(localStorage.getItem("erp_users"))
+        ?.find(x => Number(x.id) === id);
 
-    document.getElementById("detailNom").innerText = u.nom;
+    if (!u) {
+        alert("Utilisateur introuvable");
+        return;
+    }
+
+    document.getElementById("detailNom").innerText = u.name;
     document.getElementById("detailEmail").innerText = u.email;
     document.getElementById("detailRole").innerText =
         u.role === "admin" ? "Admin" : "Utilisateur";
