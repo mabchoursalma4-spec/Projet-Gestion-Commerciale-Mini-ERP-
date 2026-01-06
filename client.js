@@ -30,6 +30,15 @@ document.addEventListener("DOMContentLoaded", () => {
         loadClientDetails();
     }
 });
+/* =========================
+   MODAL AJOUT
+========================= */
+function openAddClient() {
+    document.getElementById("clientForm").reset();
+    document.getElementById("clientId").value = "";
+    document.getElementById("modalTitle").innerText = "Ajouter client";
+    clientModalInstance?.show();
+}
 
 /* =========================
    LOAD
