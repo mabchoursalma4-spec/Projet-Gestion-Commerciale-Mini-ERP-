@@ -198,7 +198,7 @@ function onSubmitUtilisateurForm(e) {
                 : u
         );
     } else {
-        utilisateurs.unshift({
+        utilisateurs.push({
             id: Date.now(),
             nom,
             email,
@@ -206,7 +206,7 @@ function onSubmitUtilisateurForm(e) {
         });
     }
 
-    saveUtilisateurs(utilisateurs);
+    
     utilisateurModalInstance?.hide();
     renderUtilisateurs();
 }

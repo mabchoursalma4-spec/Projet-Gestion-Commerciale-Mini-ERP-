@@ -118,7 +118,7 @@ function onSubmitClientForm(e) {
                 : c
         );
     } else {
-        clients.unshift({
+        clients.push({
             id: Date.now(),
             nom,
             email,
